@@ -102,33 +102,33 @@ def damp_ratio(eigvals):
 
 
 
-# Manual workspace____
-# For hardcoding the values of the A and B matrices
+# # Manual workspace____
+# # For hardcoding the values of the A and B matrices
 
-m1 = 20
-m2 = 20
-c1 = 30
-c2 = 15
-k1 = 2
-k2 = 100
+# m1 = 20
+# m2 = 20
+# c1 = 30
+# c2 = 15
+# k1 = 2
+# k2 = 100
 
-A = np.matrix([[-c1,0,(-k1-k2),k2], \
-    [0,-c2,k2,-k2],\
-    [1,0,0,0],\
-    [0,1,0,0]])
-# print(A)
-B = np.matrix([[m1,0,0,0],\
-    [0,m2,0,0],\
-    [0,0,1,0],\
-    [0,0,0,1]])
-# print(B)
+# A = np.matrix([[-c1,0,(-k1-k2),k2], \
+#     [0,-c2,k2,-k2],\
+#     [1,0,0,0],\
+#     [0,1,0,0]])
+# # print(A)
+# B = np.matrix([[m1,0,0,0],\
+#     [0,m2,0,0],\
+#     [0,0,1,0],\
+#     [0,0,0,1]])
+# # print(B)
 
-C = [[-1.5,0.0,-5.1,5.0],\
- [0.0,-0.75,5.0,-5.0],\
- [1.0,0.0,0.0,0.0],\
- [0.0,1.0,0.0,0.0,]]
+# C = [[-1.5,0.0,-5.1,5.0],\
+#  [0.0,-0.75,5.0,-5.0],\
+#  [1.0,0.0,0.0,0.0],\
+#  [0.0,1.0,0.0,0.0,]]
 
 
 
-eig_solve(A,B, char = True)
-#eig_solve(C)
+# eig_solve(A,B, char = True)
+# #eig_solve(C)

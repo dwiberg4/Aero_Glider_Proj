@@ -6,6 +6,8 @@
 
 import numpy as np 
 import json
+import eigensovler as eig
+
 
 
 #### ------------------------------------------------------ ####
@@ -56,7 +58,7 @@ CY_r = aircraft["reference"]["CY,r"]
 Cl_r = aircraft["reference"]["Cl,r"]
 Cn_r = aircraft["reference"]["Cn,r"]
 
-g = 32.1740     #ft/s2
+g = 32.17     #ft/s2
 
 # Non-existent Thrust values for this case
 T_V = 0
@@ -172,3 +174,9 @@ print(A)
 print(B)
 print(D)
 print(E)
+
+
+#### ------------------------------------------------------ ####
+#### -------------------Eigenprob Calcs-------------------- ####
+
+eigvals, eigvecs, vals = eig.eig_solve(A,B, char = True)
