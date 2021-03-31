@@ -160,11 +160,12 @@ print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(eigvecs[3,2]),np.arc
 print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(eigvecs[4,2]),np.arctan2(eigvecs[4,2].imag,eigvecs[4,2].real)))
 print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(eigvecs[5,2]),np.arctan2(eigvecs[5,2].imag,eigvecs[5,2].real)))
 print(''.ljust(56,'='))
-print('The Short Period Damping Rate is {0:9.7f}'.format(sp_sig))
-print('The Short Period 99% Damping Time is {0:9.7f}'.format(sp_99damp))
-print('The Short Period Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
-print('The Short Period Period is {0:9.7f}'.format(sp_period))
-
+print('The Long Period Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+print('The Long Period Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+print('The Long Period Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
+print('The Long Period Mode Period is {0:9.7f}'.format(sp_period))
+print()
+print()
 
 
 
@@ -204,6 +205,88 @@ E[3,3] = 1
 E[4,4] = 1
 E[5,5] = 1
 
+F = np.matmul(np.linalg.inv(E),D)
+eigvals, eigvecs = eig(F)
+
+# Calculate the magnitude of each Eigenvalue if there is an imaginary part give it a 1000 penalty
+mag = np.where(eigvals.imag == 0,np.abs(eigvals),np.abs(eigvals)-1000)
 
 
+#TODO Add checks for oscillation(Imaginary) and converge/diverge
+#TODO Create print function to print everything given an eigval and eigvector and name?
+# Sort by eigvals, eigvecs by largest magnitude
+idx = mag.argsort()[::-1]
+eigvals = eigvals[idx]
+eigvecs = eigvecs[:,idx]
+
+print('The Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[0].real,eigvals[0].imag))
+print(''.ljust(56,'='))
+
+sp_sig = -(eigvals[0].real)*2*Vo/c
+sp_99damp = np.log(0.01)/-sp_sig
+sp_dampnatfreq = np.abs(eigvals[0].imag)*2*Vo/c
+sp_dampratio = -(eigvals[0] +eigvals[1])/(2*np.sqrt(eigvals[0]*eigvals[1]))
+sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[0]*eigvals[1])
+sp_period = 2*np.pi/sp_dampnatfreq
+print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvecs[0,0]),np.arctan2(eigvecs[0,0].imag,eigvecs[0,0].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvecs[1,0]),np.arctan2(eigvecs[1,0].imag,eigvecs[1,0].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvecs[2,0]),np.arctan2(eigvecs[2,0].imag,eigvecs[2,0].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvecs[3,0]),np.arctan2(eigvecs[3,0].imag,eigvecs[3,0].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvecs[4,0]),np.arctan2(eigvecs[4,0].imag,eigvecs[4,0].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvecs[5,0]),np.arctan2(eigvecs[5,0].imag,eigvecs[5,0].real)))
+print(''.ljust(56,'='))
+print('The Roll Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+print('The Roll Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+print('The Roll Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
+print('The Roll Mode Period is {0:9.7f}'.format(sp_period))
+print()
+print()
+   
+print('Spiral Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[1].real,eigvals[1].imag))
+print(''.ljust(56,'='))
+sp_sig = -(eigvals[1].real)*2*Vo/c
+sp_99damp = np.log(0.01)/-sp_sig
+sp_dampnatfreq = np.abs(eigvals[2].imag)*2*Vo/c
+sp_dampratio = -(eigvals[2] +eigvals[3])/(2*np.sqrt(eigvals[2]*eigvals[3]))
+sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[2]*eigvals[3])
+sp_period = 2*np.pi/sp_dampnatfreq
+print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvecs[0,1]),np.arctan2(eigvecs[0,1].imag,eigvecs[0,1].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvecs[1,1]),np.arctan2(eigvecs[1,1].imag,eigvecs[1,1].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvecs[2,1]),np.arctan2(eigvecs[2,1].imag,eigvecs[2,1].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvecs[3,1]),np.arctan2(eigvecs[3,1].imag,eigvecs[3,1].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvecs[4,1]),np.arctan2(eigvecs[4,1].imag,eigvecs[4,1].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvecs[5,1]),np.arctan2(eigvecs[5,1].imag,eigvecs[5,1].real)))
+print(''.ljust(56,'='))
+print('The Spiral Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+print('The Spiral Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+print('The Spiral Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
+print('The Spiral Mode Period is {0:9.7f}'.format(sp_period))
+print()
+print()
+
+
+print('Dutch Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[4].real,eigvals[4].imag))
+print(''.ljust(56,'='))
+sp_sig = -(eigvals[4].real)*2*Vo/c
+sp_99damp = np.log(0.01)/-sp_sig
+sp_dampnatfreq = np.abs(eigvals[4].imag)*2*Vo/c
+sp_dampratio = -(eigvals[4] +eigvals[5])/(2*np.sqrt(eigvals[4]*eigvals[5]))
+sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[4]*eigvals[5])
+sp_period = 2*np.pi/sp_dampnatfreq
+print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvecs[0,4]),np.arctan2(eigvecs[0,4].imag,eigvecs[0,4].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvecs[1,4]),np.arctan2(eigvecs[1,4].imag,eigvecs[1,4].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvecs[2,4]),np.arctan2(eigvecs[2,4].imag,eigvecs[2,4].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvecs[3,4]),np.arctan2(eigvecs[3,4].imag,eigvecs[3,4].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvecs[4,4]),np.arctan2(eigvecs[4,4].imag,eigvecs[4,4].real)))
+print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvecs[5,4]),np.arctan2(eigvecs[5,4].imag,eigvecs[5,4].real)))
+print(''.ljust(56,'='))
+print('The Dutch Roll Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+print('The Dutch Roll Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+print('The Dutch Roll Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
+print('The Dutch Roll Mode Period is {0:9.7f}'.format(sp_period))
+print()
+print()
 
