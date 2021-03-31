@@ -35,7 +35,7 @@ def main(input_file,plot):
     ####---------------------------------------------------------------------####
     #                                                            Initialize scene
     my_scene = MX.Scene(input_file)
-    #my_scene.display_wireframe()
+    my_scene.display_wireframe()
 
 
     ####---------------------------------------------------------------------####
@@ -417,7 +417,7 @@ def main(input_file,plot):
 
 
 input_file = "scene.json"
-(results,params) = main(input_file,True)
+(results,params) = main(input_file,False)
 
 print("\n\nThe PARAMETERS Dictionary is as follows: ")
 pprint.pprint(params)
