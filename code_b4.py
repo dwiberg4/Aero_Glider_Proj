@@ -179,4 +179,4 @@ print(E)
 #### ------------------------------------------------------ ####
 #### -------------------Eigenprob Calcs-------------------- ####
 
-eigvals, eigvecs, vals = eig.eig_solve(A,B, char = True)
+eigvals, eigvecs, vals = eig.eig_solve(A,B, char = True, file = True)
