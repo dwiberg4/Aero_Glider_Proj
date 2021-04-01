@@ -1,0 +1,45 @@
+{
+    "tag": "Example input file using a traditional airplane",
+    "run": {
+        "display_wireframe": {
+            "show_legend": true
+        },
+        "solve_forces": {
+            "file_name": "Output_FM",
+            "non_dimensional": false
+        },
+        "pitch_trim": {
+            "set_state_to_trim": false
+        },
+        "derivatives": {
+            "file_name": "Output_Deriv"
+        }
+    },
+    "solver": {
+        "type": "linear",
+        "convergence": 1e-10,
+        "relaxation": 0.9
+    },
+    "units": "English",
+    "scene": {
+        "atmosphere": {
+            "rho": 0.002048
+        },
+        "aircraft": {
+            "glider_2.0": {
+                "file": "glider_2.0.json",
+                "state": {
+                    "type": "aerodynamic",
+                    "velocity": 17.93,
+                    "alpha": 0.0,
+                    "beta": 0.0
+                },
+                "control_state": {
+                    "elevator": 0.0,
+                    "rudder": 0.0,
+                    "aileron": 0.0
+                }
+            }
+        }
+    }
+}
