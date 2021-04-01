@@ -1,4 +1,4 @@
-pythonimport machupX as MX
+import machupX as MX
 import numpy as np
 import json
 from scipy.optimize import minimize
