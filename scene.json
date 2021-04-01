@@ -27,7 +27,7 @@
         },
         "aircraft": {
             "glider_2.0": {
-                "file": "C:/Users/Matheson Price/Glider_Project/glider_2.0.json",
+                "file": "glider_2.0.json",
                 "state": {
                     "type": "aerodynamic",
                     "velocity": 17.93,

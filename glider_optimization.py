@@ -62,7 +62,7 @@ def trim(static_margin, Cn_beta, Cl_beta):
     print(res)
 
 if __name__ == '__main__':
-    trim(0.35, 0.1, -0.05)
+    trim( 0.35, 0.1, -0.05)
     # To use, define everything in the JSON file, then define your trim(static_margin, Cn_beta, Cl_beta)
     # Pressing run will update the CGx, H and V Stab location and dihedral inside of the JSON file.
 
