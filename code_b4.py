@@ -6,6 +6,8 @@
 
 import numpy as np 
 import json
+import eigensovler as eig
+
 
 
 #### ------------------------------------------------------ ####
@@ -17,7 +19,7 @@ with open(input_file, "r") as f:
 Sw = aircraft["aircraft"]["wing_area[ft^2]"]
 b = aircraft["aircraft"]["wing_span[ft]"]
 W = aircraft["operating"]["weight[lbf]"]
-gamma = (aircraft["operating"]["climb[deg]"]) * (np.pi/ 180)
+theta = (aircraft["operating"]["climb[deg]"]) * (np.pi/ 180)
 rho = aircraft["operating"]["density[slugs/ft^3]"]
 CLo = aircraft["reference"]["CL"]
 Ixx = aircraft["reference"]["Ixx[slugs*ft^2]"]
@@ -56,10 +58,16 @@ CY_r = aircraft["reference"]["CY,r"]
 Cl_r = aircraft["reference"]["Cl,r"]
 Cn_r = aircraft["reference"]["Cn,r"]
 
+g = 32.17     #ft/s2
+
+# Non-existent Thrust values for this case
 T_V = 0
 alpha_To = 0
-theta = 0 * (np.pi/ 180)
-g = 32.1740     #ft/s2
+z_T = 0
+x_T = 0
+
+Cm_o = 0
+
 
 
 #### ------------------------------------------------------ ####
@@ -70,8 +78,7 @@ Vo = np.sqrt((2*W*np.cos(theta)) / (rho*Sw*CLo))
 CD_o = CD0 + (CD1 * CLo) + (CD2 * (CLo**2))
 CD_a = (CD1 * CL_a) + (2 * CD2 * CLo * CL_a)
 CT_V = T_V / (0.5 * rho * Vo * Sw)
-Cm_o = 0.1
-z_To = 0.01
+z_To = (z_T * np.cos(alpha_To)) + (x_T * np.sin(alpha_To))
 
 Rgx = (g * c) / (2 * (Vo**2))
 Rgy = (g * b) / (2 * (Vo**2))
@@ -167,3 +174,9 @@ print(A)
 print(B)
 print(D)
 print(E)
+
+
+#### ------------------------------------------------------ ####
+#### -------------------Eigenprob Calcs-------------------- ####
+
+eigvals, eigvecs, vals = eig.eig_solve(A,B, char = True)
