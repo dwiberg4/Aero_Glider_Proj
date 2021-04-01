@@ -3,7 +3,7 @@ import numpy as np
 import json
 from scipy.optimize import minimize
 
-#TODO: trim at launch velocity
+
 
 
 def trim_func(x,Cl,static_margin, Cn_beta, Cl_beta):
@@ -42,7 +42,7 @@ def trim_func(x,Cl,static_margin, Cn_beta, Cl_beta):
     print('L/D is: ',FM_results['glider_2.0']['total']['CL']/FM_results['glider_2.0']['total']['CD'])
     return residual
 
-def trim(Cl,static_margin, Cn_beta, Cl_beta):
+def trim(static_margin, Cn_beta, Cl_beta):
     x = [
         -0.141,              # CGx                                   0
         3.2,                # Mounting Angle fo the main wing       1
@@ -54,14 +54,15 @@ def trim(Cl,static_margin, Cn_beta, Cl_beta):
         plane = json.load(f)
     f.close()
     weight = plane['weight']
-    velocity = 
+    velocity = np.sqrt((32.17/weight)*2*10)
+    CL = weight/(0.5*0.0020482*velocity**2*plane['reference']['area'])
     constraints = ({'type':'ineq','fun':lambda x: x[4]})
-    args = (Cl,static_margin, Cn_beta, Cl_beta)
+    args = (CL,static_margin, Cn_beta, Cl_beta)
     res = minimize(trim_func, x, constraints = constraints,args = args)
     print(res)
 
 if __name__ == '__main__':
-    trim(0.5, 0.35, 0.1, -0.05)
+    trim(0.35, 0.1, -0.05)
     # To use, define everything in the JSON file, then define your trim(static_margin, Cn_beta, Cl_beta)
     # Pressing run will update the CGx, H and V Stab location and dihedral inside of the JSON file.
 
