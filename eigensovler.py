@@ -13,7 +13,14 @@ from scipy.linalg import eig
 #   will assume and run the General Eigenproblem
 # kwargs: char
 #   Will return a dictionary of the behavior characteristics
-def eig_solve(*args, **kwargs):
+def eig_solve(Vo,b,c,*args, **kwargs):
+    if "title" in kwargs and kwargs["title"] == "Longitudinal":
+        t_dimless = (c/(2*Vo))
+    elif "title" in kwargs and kwargs["title"] == "Lateral":
+        t_dimless = (b/(2*Vo))
+    else:
+        print("\nNo type specified. What Non-Dimensional Time do you want?")
+    
     if (len(args)==2):
         #print("\n\tWe will now begin the Generalize Eigensolver routine\n")
         C = np.matmul(np.linalg.inv(args[1]),args[0])
@@ -30,23 +37,23 @@ def eig_solve(*args, **kwargs):
         #print("\tThe corresponding eigenvector is:", eigvecs[:,i])
     
     if "char" in kwargs and kwargs["char"]:
-        vals = beh_char(eigvals,eigvecs)
+        vals = beh_char(eigvals,eigvecs,t_dimless)
     else:
         vals = 0
 
-    if "file" in kwargs and kwargs["file"]:
-        res_out(args,C,eigvals,eigvecs,vals)
+    if "file" in kwargs and "title" in kwargs and kwargs["file"]:
+        res_out(args,C,eigvals,eigvecs,vals,kwargs["title"])
 
     # #_________0______1_______2_____3_______4____5_____6_____7_______8______9_____10__
     # vals = [w_n_d, sigmas, taus, halves, nines,dubs, w_n, zetas, periods, amps, phas]
     return (eigvals,eigvecs,vals)
     
     
-def beh_char(eigvals,eigvecs):
+def beh_char(eigvals,eigvecs,t):
     # Recieves vector of eigvals; returns all the behavior characteristics
-    w_n_d = damp_nat_freq(eigvals)
+    w_n_d = damp_nat_freq(eigvals,t)
     #print("\n\t\tThe Damped Natural Frequencies are: \n",w_n_d)
-    sigmas = damp_rate(eigvals)
+    sigmas = damp_rate(eigvals,t)
     #print("\n\t\tThe Damping Rates are: \n\n",sigmas)
     taus = tau(sigmas)
     #print("\n\t\tThe Time Constants are: \n\n",taus)
@@ -56,7 +63,7 @@ def beh_char(eigvals,eigvecs):
     #print("\n\t\tThe Times to 99'%' are: \n\n", nines)
     dubs = double(sigmas)
     #print("\n\t\tThe Double Times are: \n\n", dubs)
-    w_n = nat_freq(eigvals)
+    w_n = nat_freq(eigvals,t)
     #print("\n\t\tThe Natural frequencies for the eigenvalue pairs are: \n\n",w_n)
     zetas = damp_ratio(eigvals)
     #print("\n\t\tThe Damping Ratios for the eigenvalue pairs are: \n\n",zetas)
@@ -70,8 +77,9 @@ def beh_char(eigvals,eigvecs):
 
 
 # Results File writer Function
-def res_out(args,C,eigvals,eigvecs,vals):
-    with open('Eig_sol.txt', 'w') as resout:
+def res_out(args,C,eigvals,eigvecs,vals,title):
+    name = title + "_Eig_sol.txt"
+    with open(name, 'w') as resout:
         if (len(args)==2):
             resout.write('A Matrix Values: \n\n')
             for i in range(args[0].shape[0]):
@@ -170,13 +178,13 @@ def res_out(args,C,eigvals,eigvecs,vals):
         resout.write('\n')
     
 
-def damp_nat_freq(eigvals):
+def damp_nat_freq(eigvals,t):
     # Recieves vector of eigvals; returns corresponding w_d vector
-    return abs(eigvals.imag)
+    return (abs(eigvals.imag)) / t
 
-def damp_rate(eigvals):
+def damp_rate(eigvals,t):
     # Recieves vector of eigvals; returns corresponding sigma vector
-    return -(eigvals.real)
+    return (-(eigvals.real)) / t
 
 def tau(sigmas):
     # Recieves vector of sigmas; returns corresponding tau vector
@@ -194,13 +202,13 @@ def double(sigmas):
     # Recieves vector of sigmas; returns corresponding Double Time vector
     return (-np.log(2)) / sigmas 
 
-def nat_freq(eigvals):
+def nat_freq(eigvals,t):
     # Recieves vector of eigvals; returns 1/2 size vector of natural
     #   frequencies of eigenvalue pairs
     w_n = np.zeros(((int(eigvals.size/2)),1),dtype = 'complex_')
     for i in range(int(eigvals.size/2)):
         j = i*2
-        w_n[i] = np.sqrt(eigvals[j]*eigvals[j+1])
+        w_n[i] = (np.sqrt(eigvals[j]*eigvals[j+1])) / t
     return w_n
 
 def damp_ratio(eigvals):
