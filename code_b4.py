@@ -6,8 +6,7 @@
 
 import numpy as np 
 import json
-import eigensovler as eig
-
+import eigensovler as myeig
 
 
 #### ------------------------------------------------------ ####
@@ -170,13 +169,53 @@ E[5,5] = 1
 
 
 
-print(A)
-print(B)
-print(D)
-print(E)
+# print(A)
+# print(B)
+# print(D)
+# print(E)
 
 
 #### ------------------------------------------------------ ####
 #### -------------------Eigenprob Calcs-------------------- ####
+eigvals, eigvecs, vals = myeig.eig_solve(A,B, char = True, file = True)
 
-eigvals, eigvecs, vals = eig.eig_solve(A,B, char = True, file = True)
+# #_________0______1_______2_____3_______4____5_____6_____7_______8______9_____10__
+# vals = [w_n_d, sigmas, taus, halves, nines,dubs, w_n, zetas, periods, amps, phas]
+
+t_dimless = (c/2*Vo)
+
+for i in range(eigvals.shape[0]):
+    print("------------------------------------------------------------")
+    print("\n\nEigenvalue number: %d \t %0.12f %0.12fj" % ((i+1),eigvals[i].real,eigvals[i].imag))
+    print("\n\tThe component Amplitudes of the associated Eigenvector:")
+    for j in range(eigvecs.shape[1]):
+        print("\t", vals[9][i][j])
+    print("\n\tThe component Phases of the associated Eigenvector:")
+    for k in range(eigvecs.shape[1]):
+        print("\t", vals[10][i][j])
+    print("\n\tThe Damping Rate: \n\t", vals[1][i])
+
+    if eigvals[i].real > 0.0:
+        print("\n++The Mode for this Eigenvalue is Divergent\n")
+        print("\n\tThe Doubling Time is: \n\t",vals[5][i])
+        if eigvals[i].imag != 0.0:
+            print("\n++The Mode for this Eigenvalue is Oscillatory")
+            print("\n\tThe Damped Natural Frequency: \n\t", vals[0][i])
+            print("\n\tThe Period: \n\t", vals[8][i])
+        else:
+            print("\n++The mode is Non-Oscillatory")
+
+    elif eigvals[i].real < 0.0:
+        print("\n++The Mode for this Eigenvalue is Convergent\n")
+        print("\n\tThe 99% Damping Time is: \n\t",vals[4][i])
+        if eigvals[i].imag != 0.0:
+            print("\n++The Mode for this Eigenvalue is Oscillatory")
+            print("\n\tThe Damped Natural Frequency: \n\t", vals[0][i])
+            print("\n\tThe Period: \n\t", vals[8][i])
+        else:
+            print("\n++The mode is Non-Oscillatory")
+
+    else:
+        print("\n++The mode is Rigid Body Motion")
+
+        
