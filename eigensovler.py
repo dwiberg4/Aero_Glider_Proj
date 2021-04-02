@@ -32,7 +32,7 @@ def eig_solve(*args, **kwargs):
         #print("\tThe corresponding eigenvector is:", eigvecs[:,i])
     
     if "char" in kwargs and kwargs["char"]:
-        vals = beh_char(eigvals)
+        vals = beh_char(eigvals,eigvecs)
     else:
         vals = 0
 
@@ -42,7 +42,7 @@ def eig_solve(*args, **kwargs):
     return (eigvals,eigvecs,vals)
     
     
-def beh_char(eigvals):
+def beh_char(eigvals,eigvecs):
     # Recieves vector of eigvals; returns all the behavior characteristics
     w_n_d = damp_nat_freq(eigvals)
     print("\n\t\tThe Damped Natural Frequencies are: \n",w_n_d)
@@ -61,7 +61,11 @@ def beh_char(eigvals):
     zetas = damp_ratio(eigvals)
     print("\n\t\tThe Damping Ratios for the eigenvalue pairs are: \n\n",zetas)
 
-    vals = [w_n_d,sigmas,taus,halves,nines,dubs,w_n,zetas]
+    periods = period_func(w_n_d)
+    amps = amp_func(eigvecs)
+    phas = phase_func(eigvecs)
+    #_________0______1_______2_____3_______4____5_____6_____7_______8______9_____10__
+    vals = [w_n_d, sigmas, taus, halves, nines,dubs, w_n, zetas, periods, amps, phas]
     return vals
 
 
@@ -98,12 +102,14 @@ def res_out(args,C,eigvals,eigvecs,vals):
                     resout.write(str_out)
                 resout.write('\n')
             resout.write('\n')
+
         resout.write('Eigenvalues: \n\n')
         for i in range(eigvals.size):
             str_out = '{:>20.12f}'.format(eigvals[i])
             resout.write(str_out)
             resout.write('\n')
         resout.write('\n')
+
         resout.write('Eigenvectors: \n\n')
         for i in range(eigvecs.shape[0]):
             for j in range(eigvecs.shape[1]):
@@ -112,6 +118,57 @@ def res_out(args,C,eigvals,eigvecs,vals):
             resout.write('\n')
         resout.write('\n')
 
+        resout.write('Amplitudes: \n\n')
+        for i in range(vals[9].shape[0]):
+            for j in range(vals[9].shape[1]):
+                str_out = '{:>20.12f}'.format(vals[9][i,j])
+                resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('Phases: \n\n')
+        for i in range(vals[10].shape[0]):
+            for j in range(vals[10].shape[1]):
+                str_out = '{:>20.12f}'.format(vals[10][i,j])
+                resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('Damping Rates: \n\n')
+        for i in range(vals[1].size):
+            str_out = '{:>20.12f}'.format(vals[1][i])
+            resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('99% Damping Times (For Convergent Modes): \n\n')
+        for i in range(vals[4].size):
+            str_out = '{:>20.12f}'.format(vals[4][i])
+            resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('Doubling Times (For Divergent Modes): \n\n')
+        for i in range(vals[5].size):
+            str_out = '{:>20.12f}'.format(vals[5][i])
+            resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('Damped Natural Frequencies (For Oscillatory Systems): \n\n')
+        for i in range(vals[0].size):
+            str_out = '{:>20.12f}'.format(vals[0][i])
+            resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('Period (For Oscillatory Systems): \n\n')
+        for i in range(vals[8].size):
+            str_out = '{:>20.12f}'.format(vals[8][i])
+            resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+    
 
 def damp_nat_freq(eigvals):
     # Recieves vector of eigvals; returns corresponding w_d vector
@@ -156,6 +213,11 @@ def damp_ratio(eigvals):
         zeta[i] = top / (2* (np.sqrt(eigvals[j]*eigvals[j+1])) )
     return zeta
 
+def period_func(w_n_d):
+    # Recieves vector of damped natural frequencies; returns 1/2 size
+    # vector of damping ratios for eigenvalue pairs
+    return ((2*np.pi) / w_n_d ) 
+
 def amp_func(eigvecs):
     # Receives eigvecs; returns square matrix of amplitude for each 
     # component of each eigenvector
@@ -163,7 +225,7 @@ def amp_func(eigvecs):
     for i in range(eigvecs.shape[0]):
         for j in range(eigvecs.shape[1]):
             amp[i,j] = np.sqrt( (eigvecs[i,j].real**2) + (eigvecs[i,j].imag**2) )
-
+    return amp
 
 def phase_func(eigvecs):
     # Receives eigvecs; returns square matrix of phase for each 
@@ -172,6 +234,7 @@ def phase_func(eigvecs):
     for i in range(eigvecs.shape[0]):
         for j in range(eigvecs.shape[1]):
             pha[i,j] = math.atan2( (eigvecs[i,j].real),(eigvecs[i,j].imag) )
+    return pha
 
 
 
