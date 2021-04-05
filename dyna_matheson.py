@@ -3,6 +3,80 @@ from scipy.linalg import eig
 import json
 input = 'BaselineGlider.json'
 
+def printEigen(eigval,eigvec,mode,lat,long,dimensional):
+    print('The {0:<20s} is given by {1:9.7f} ± {2:9.7f} i.'.format(mode,eigval.real,np.abs(eigval.imag)))
+    sig = -eigval.real*dimensional
+    damped = (0>eigval.real)
+    damp_nat_freq = np.abs(eigval.imag)*dimensional
+    damp_rate = -eigval.real
+
+    if damp_nat_freq > 0.000001:
+        eig1 = np.complex(sig,damp_nat_freq)
+        eig2 = np.complex(sig,-damp_nat_freq)
+        undamp_freq = np.sqrt(eig1*eig2)*dimensional
+        period = 2*np.pi/damp_nat_freq
+        damp_ratio = -(eig1 + eig2)/(2*np.sqrt(eig1*eig2))
+        if lat:
+            print(''.ljust(56,'='))
+            print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(eigvec[0]),np.arctan2(eigvec[0].imag,eigvec[0].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δα',np.abs(eigvec[1]),np.arctan2(eigvec[1].imag,eigvec[1].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δqbar',np.abs(eigvec[2]),np.arctan2(eigvec[2].imag,eigvec[2].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(eigvec[3]),np.arctan2(eigvec[3].imag,eigvec[3].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(eigvec[4]),np.arctan2(eigvec[4].imag,eigvec[4].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(eigvec[5]),np.arctan2(eigvec[5].imag,eigvec[5].real)))
+            print(''.ljust(56,'='))
+        if long:
+            print(''.ljust(56,'='))        
+            print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvec[0]),np.arctan2(eigvec[0].imag,eigvec[0].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvec[1]),np.arctan2(eigvec[1].imag,eigvec[1].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvec[2]),np.arctan2(eigvec[2].imag,eigvec[2].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvec[3]),np.arctan2(eigvec[3].imag,eigvec[3].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvec[4]),np.arctan2(eigvec[4].imag,eigvec[4].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvec[5]),np.arctan2(eigvec[5].imag,eigvec[5].real)))
+            print(''.ljust(56,'='))
+        print('The {1:<20s} Period is {0:9.7f}'.format(period,mode))   
+        print('The {1:<20s} Damped Frequency is {0:9.7f}'.format(damp_nat_freq,mode))                   
+    else:
+        if lat:
+            print(''.ljust(56,'='))
+            print('{0:<15s}{1:>15s}'.format('Component','Amplitude'))
+            print('{0:<20s}{1:>9.7f}'.format('Δμ',np.abs(eigvec[0])))
+            print('{0:<20s}{1:>9.7f}'.format('Δα',np.abs(eigvec[1])))
+            print('{0:<20s}{1:>9.7f}'.format('Δqbar',np.abs(eigvec[2])))
+            print('{0:<20s}{1:>9.7f}'.format('Δξx',np.abs(eigvec[3])))
+            print('{0:<20s}{1:>9.7f}'.format('Δξz',np.abs(eigvec[4])))
+            print('{0:<20s}{1:>9.7f}'.format('Δθ',np.abs(eigvec[5])))
+            print(''.ljust(56,'='))
+        if long:
+            print(''.ljust(56,'='))        
+            print('{0:<15s}{1:>15s}'.format('Component','Amplitude'))
+            print('{0:<20s}{1:>9.7f}'.format('Δβ',np.abs(eigvec[0])))
+            print('{0:<20s}{1:>9.7f}'.format('Δpbar',np.abs(eigvec[1])))
+            print('{0:<20s}{1:>9.7f}'.format('Δrbar',np.abs(eigvec[2])))
+            print('{0:<20s}{1:>9.7f}'.format('Δξy',np.abs(eigvec[3])))
+            print('{0:<20s}{1:>9.7f}'.format('Δφ',np.abs(eigvec[4])))
+            print('{0:<20s}{1:>9.7f}'.format('Δψ',np.abs(eigvec[5])))
+            print(''.ljust(56,'='))
+        undamp_freq = 'N/A'
+        period = 'N/A'
+        damp_ratio = 'N/A'
+    if damped:
+        damp_time = -np.log(0.01)/(sig)          # 99% damping time
+        print('The {0:<20s} 99% Damping Time is {1:9.7f}'.format(mode,damp_time))
+    else:
+        damp_time = -np.log(2)/sig             # Doubling Time
+        print('The {0:<20s} Doubling Time is {1:9.7f}'.format(mode,damp_time))
+    print('The {1:<20s} Damping Rate is {0:9.7f}'.format(sig,mode))
+    print()
+    print()
+
+    
+
+
+
+
 with open(input,'r') as f:
     aircraft = json.load(f)
 f.close()
@@ -66,10 +140,10 @@ R_gx = g*c / (2*Vo**2)                               # Equation 10.71 Ch. 7 Over
 R_gy = g*b / (2*Vo**2)                               # Equation 10.71 Ch. 7 Overview
 R_rhox = 4*W/g / (rho*Sw*c)                          # Equation 10.72 Ch. 7 Overview
 R_rhoy = 4*W/g / (rho*Sw*b)                          # Equation 10.72 Ch. 7 Overview
-R_xx = 8*Ixx / (rho*Sw*b**3)                          # Equation 10.73 Ch. 7 Overview
-R_yy = 8*Iyy / (rho*Sw*c**3)                          # Equation 10.73 Ch. 7 Overview
-R_zz = 8*Izz / (rho*Sw*b**3)                          # Equation 10.73 Ch. 7 Overview
-R_xz = 8*Ixz / (rho*Sw*b**3)                          # Equation 10.73 Ch. 7 Overview
+R_xx = 8*Ixx / (rho*Sw*b**3)                         # Equation 10.73 Ch. 7 Overview
+R_yy = 8*Iyy / (rho*Sw*c**3)                         # Equation 10.73 Ch. 7 Overview
+R_zz = 8*Izz / (rho*Sw*b**3)                         # Equation 10.73 Ch. 7 Overview
+R_xz = 8*Ixz / (rho*Sw*b**3)                         # Equation 10.73 Ch. 7 Overview
 
 # Longitudinal Equations from 10.75 Ch. 7 Overview
 A = np.zeros((6,6))
@@ -112,60 +186,64 @@ B[4,4] = 1
 B[5,5] = 1
 
 C = np.matmul(np.linalg.inv(B),A)
-eigvals, eigvecs = eig(C)
+long_eigvals, long_eigvecs = eig(C)
+print(CD_o)
+print(CD_a)
 
 # Calculate the magnitude of each Eigenvalue
-mag = np.abs(eigvals)
+mag = np.abs(long_eigvals)
 
-# Sort by eigvals, eigvecs by largest magnitude
+# Sort by long_eigvals, long_eigvecs by largest magnitude
 idx = mag.argsort()[::-1]
-eigvals = eigvals[idx]
-eigvecs = eigvecs[:,idx]
-print('Short Period Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[0].real,eigvals[0].imag))
-print(''.ljust(56,'='))
-sp_sig = -(eigvals[0].real)*2*Vo/c
-sp_99damp = np.log(0.01)/-sp_sig
-sp_dampnatfreq = np.abs(eigvals[0].imag)*2*Vo/c
-sp_dampratio = -(eigvals[0] +eigvals[1])/(2*np.sqrt(eigvals[0]*eigvals[1]))
-sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[0]*eigvals[1])
-sp_period = 2*np.pi/sp_dampnatfreq
-print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(eigvecs[0,0]),np.arctan2(eigvecs[0,0].imag,eigvecs[0,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δα',np.abs(eigvecs[1,0]),np.arctan2(eigvecs[1,0].imag,eigvecs[1,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δqbar',np.abs(eigvecs[2,0]),np.arctan2(eigvecs[2,0].imag,eigvecs[2,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(eigvecs[3,0]),np.arctan2(eigvecs[3,0].imag,eigvecs[3,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(eigvecs[4,0]),np.arctan2(eigvecs[4,0].imag,eigvecs[4,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(eigvecs[5,0]),np.arctan2(eigvecs[5,0].imag,eigvecs[5,0].real)))
-print(''.ljust(56,'='))
-print('The Short Period Damping Rate is {0:9.7f}'.format(sp_sig))
-print('The Short Period 99% Damping Time is {0:9.7f}'.format(sp_99damp))
-print('The Short Period Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
-print('The Short Period Period is {0:9.7f}'.format(sp_period))
-print()
-print()
+long_eigvals = long_eigvals[idx]
+long_eigvecs = long_eigvecs[:,idx]
+# print('Short Period Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(long_eigvals[0].real,np.abs(long_eigvals[0].imag)))
+# print(''.ljust(56,'='))
+# sp_sig = -(long_eigvals[0].real)*2*Vo/c
+# sp_99damp = np.log(0.01)/-sp_sig
+# sp_dampnatfreq = np.abs(long_eigvals[0].imag)*2*Vo/c
+# sp_dampratio = -(long_eigvals[0] +long_eigvals[1])/(2*np.sqrt(long_eigvals[0]*long_eigvals[1]))
+# sp_undampnatfreq = 2*Vo/c*np.sqrt(long_eigvals[0]*long_eigvals[1])
+# sp_period = 2*np.pi/sp_dampnatfreq
+# print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(long_eigvecs[0,0]),np.arctan2(long_eigvecs[0,0].imag,long_eigvecs[0,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δα',np.abs(long_eigvecs[1,0]),np.arctan2(long_eigvecs[1,0].imag,long_eigvecs[1,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δqbar',np.abs(long_eigvecs[2,0]),np.arctan2(long_eigvecs[2,0].imag,long_eigvecs[2,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(long_eigvecs[3,0]),np.arctan2(long_eigvecs[3,0].imag,long_eigvecs[3,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(long_eigvecs[4,0]),np.arctan2(long_eigvecs[4,0].imag,long_eigvecs[4,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(long_eigvecs[5,0]),np.arctan2(long_eigvecs[5,0].imag,long_eigvecs[5,0].real)))
+# print(''.ljust(56,'='))
+# print('The Short Period Damping Rate is {0:9.7f}'.format(sp_sig))
+# print('The Short Period 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+# print('The Short Period Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
+# print('The Short Period Period is {0:9.7f}'.format(sp_period))
+# print()
+# print()
    
-print('Long Period Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[2].real,eigvals[2].imag))
-print(''.ljust(56,'='))
-sp_sig = -(eigvals[2].real)*2*Vo/c
-sp_99damp = np.log(0.01)/-sp_sig
-sp_dampnatfreq = np.abs(eigvals[2].imag)*2*Vo/c
-sp_dampratio = -(eigvals[2] +eigvals[3])/(2*np.sqrt(eigvals[2]*eigvals[3]))
-sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[2]*eigvals[3])
-sp_period = 2*np.pi/sp_dampnatfreq
-print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(eigvecs[0,2]),np.arctan2(eigvecs[0,2].imag,eigvecs[0,2].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δα',np.abs(eigvecs[1,2]),np.arctan2(eigvecs[1,2].imag,eigvecs[1,2].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δqbar',np.abs(eigvecs[2,2]),np.arctan2(eigvecs[2,2].imag,eigvecs[2,2].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(eigvecs[3,2]),np.arctan2(eigvecs[3,2].imag,eigvecs[3,2].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(eigvecs[4,2]),np.arctan2(eigvecs[4,2].imag,eigvecs[4,2].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(eigvecs[5,2]),np.arctan2(eigvecs[5,2].imag,eigvecs[5,2].real)))
-print(''.ljust(56,'='))
-print('The Long Period Mode Damping Rate is {0:9.7f}'.format(sp_sig))
-print('The Long Period Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
-print('The Long Period Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
-print('The Long Period Mode Period is {0:9.7f}'.format(sp_period))
-print()
-print()
+# print('Long Period Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(long_eigvals[2].real,np.abs(long_eigvals[2].imag)))
+# print(''.ljust(56,'='))
+# sp_sig = -(long_eigvals[2].real)*2*Vo/c
+# sp_99damp = np.log(0.01)/-sp_sig
+# sp_dampnatfreq = np.abs(long_eigvals[2].imag)*2*Vo/c
+# sp_dampratio = -(long_eigvals[2] +long_eigvals[3])/(2*np.sqrt(long_eigvals[2]*long_eigvals[3]))
+# sp_undampnatfreq = 2*Vo/c*np.sqrt(long_eigvals[2]*long_eigvals[3])
+# sp_period = 2*np.pi/sp_dampnatfreq
+# print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(long_eigvecs[0,2]),np.arctan2(long_eigvecs[0,2].imag,long_eigvecs[0,2].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δα',np.abs(long_eigvecs[1,2]),np.arctan2(long_eigvecs[1,2].imag,long_eigvecs[1,2].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δqbar',np.abs(long_eigvecs[2,2]),np.arctan2(long_eigvecs[2,2].imag,long_eigvecs[2,2].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(long_eigvecs[3,2]),np.arctan2(long_eigvecs[3,2].imag,long_eigvecs[3,2].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(long_eigvecs[4,2]),np.arctan2(long_eigvecs[4,2].imag,long_eigvecs[4,2].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(long_eigvecs[5,2]),np.arctan2(long_eigvecs[5,2].imag,long_eigvecs[5,2].real)))
+# print(''.ljust(56,'='))
+# print('The Long Period Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+# print('The Long Period Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+# print('The Long Period Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
+# print('The Long Period Mode Period is {0:9.7f}'.format(sp_period))
+# print()
+# print()
+printEigen(long_eigvals[0],long_eigvecs[:,0],'Short Period Mode',False,True,2*Vo/c)
+printEigen(long_eigvals[2],long_eigvecs[:,2],'Long Period Mode',False,True,2*Vo/c)
 
 
 
@@ -206,87 +284,142 @@ E[4,4] = 1
 E[5,5] = 1
 
 F = np.matmul(np.linalg.inv(E),D)
-eigvals, eigvecs = eig(F)
+lat_eigvals, lat_eigvecs = eig(F)
 
 # Calculate the magnitude of each Eigenvalue if there is an imaginary part give it a 1000 penalty
-mag = np.where(eigvals.imag == 0,np.abs(eigvals),np.abs(eigvals)-1000)
+mag = np.where(lat_eigvals.imag == 0,np.abs(lat_eigvals),np.abs(lat_eigvals)-1000)
 
 
 #TODO Add checks for oscillation(Imaginary) and converge/diverge
 #TODO Create print function to print everything given an eigval and eigvector and name?
-# Sort by eigvals, eigvecs by largest magnitude
+# Sort by lat_eigvals, lat_eigvecs by largest magnitude
 idx = mag.argsort()[::-1]
-eigvals = eigvals[idx]
-eigvecs = eigvecs[:,idx]
+lat_eigvals = lat_eigvals[idx]
+lat_eigvecs = lat_eigvecs[:,idx]
 
-print('The Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[0].real,eigvals[0].imag))
+print('The Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(lat_eigvals[0].real,lat_eigvals[0].imag))
 print(''.ljust(56,'='))
 
-sp_sig = -(eigvals[0].real)*2*Vo/c
-sp_99damp = np.log(0.01)/-sp_sig
-sp_dampnatfreq = np.abs(eigvals[0].imag)*2*Vo/c
-sp_dampratio = -(eigvals[0] +eigvals[1])/(2*np.sqrt(eigvals[0]*eigvals[1]))
-sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[0]*eigvals[1])
-sp_period = 2*np.pi/sp_dampnatfreq
-print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvecs[0,0]),np.arctan2(eigvecs[0,0].imag,eigvecs[0,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvecs[1,0]),np.arctan2(eigvecs[1,0].imag,eigvecs[1,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvecs[2,0]),np.arctan2(eigvecs[2,0].imag,eigvecs[2,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvecs[3,0]),np.arctan2(eigvecs[3,0].imag,eigvecs[3,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvecs[4,0]),np.arctan2(eigvecs[4,0].imag,eigvecs[4,0].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvecs[5,0]),np.arctan2(eigvecs[5,0].imag,eigvecs[5,0].real)))
-print(''.ljust(56,'='))
-print('The Roll Mode Damping Rate is {0:9.7f}'.format(sp_sig))
-print('The Roll Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
-print('The Roll Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
-print('The Roll Mode Period is {0:9.7f}'.format(sp_period))
-print()
-print()
+# sp_sig = -(lat_eigvals[0].real)*2*Vo/c
+# sp_99damp = np.log(0.01)/-sp_sig
+# sp_dampnatfreq = np.abs(lat_eigvals[0].imag)*2*Vo/c
+# sp_dampratio = -(lat_eigvals[0] +lat_eigvals[1])/(2*np.sqrt(lat_eigvals[0]*lat_eigvals[1]))
+# sp_undampnatfreq = 2*Vo/c*np.sqrt(lat_eigvals[0]*lat_eigvals[1])
+# sp_period = 2*np.pi/sp_dampnatfreq
+# print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(lat_eigvecs[0,0]),np.arctan2(lat_eigvecs[0,0].imag,lat_eigvecs[0,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(lat_eigvecs[1,0]),np.arctan2(lat_eigvecs[1,0].imag,lat_eigvecs[1,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(lat_eigvecs[2,0]),np.arctan2(lat_eigvecs[2,0].imag,lat_eigvecs[2,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(lat_eigvecs[3,0]),np.arctan2(lat_eigvecs[3,0].imag,lat_eigvecs[3,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(lat_eigvecs[4,0]),np.arctan2(lat_eigvecs[4,0].imag,lat_eigvecs[4,0].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(lat_eigvecs[5,0]),np.arctan2(lat_eigvecs[5,0].imag,lat_eigvecs[5,0].real)))
+# print(''.ljust(56,'='))
+# print('The Roll Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+# print('The Roll Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+# #print('The Roll Mode Frequency is {0:9.7f}'.format(sp_undampnatfreq))
+# #print('The Roll Mode Period is {0:9.7f}'.format(sp_period))
+# print()
+# print()
    
-print('Spiral Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[1].real,eigvals[1].imag))
-print(''.ljust(56,'='))
-sp_sig = -(eigvals[1].real)*2*Vo/c
-sp_99damp = np.log(0.01)/-sp_sig
-sp_dampnatfreq = np.abs(eigvals[2].imag)*2*Vo/c
-sp_dampratio = -(eigvals[2] +eigvals[3])/(2*np.sqrt(eigvals[2]*eigvals[3]))
-sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[2]*eigvals[3])
-sp_period = 2*np.pi/sp_dampnatfreq
-print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvecs[0,1]),np.arctan2(eigvecs[0,1].imag,eigvecs[0,1].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvecs[1,1]),np.arctan2(eigvecs[1,1].imag,eigvecs[1,1].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvecs[2,1]),np.arctan2(eigvecs[2,1].imag,eigvecs[2,1].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvecs[3,1]),np.arctan2(eigvecs[3,1].imag,eigvecs[3,1].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvecs[4,1]),np.arctan2(eigvecs[4,1].imag,eigvecs[4,1].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvecs[5,1]),np.arctan2(eigvecs[5,1].imag,eigvecs[5,1].real)))
-print(''.ljust(56,'='))
-print('The Spiral Mode Damping Rate is {0:9.7f}'.format(sp_sig))
-print('The Spiral Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
-print('The Spiral Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
-print('The Spiral Mode Period is {0:9.7f}'.format(sp_period))
-print()
-print()
+# print('Spiral Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(lat_eigvals[1].real,lat_eigvals[1].imag))
+# print(''.ljust(56,'='))
+# sp_sig = -(lat_eigvals[1].real)*2*Vo/c
+# sp_99damp = np.log(0.01)/-sp_sig
+# sp_dampnatfreq = np.abs(lat_eigvals[2].imag)*2*Vo/c
+# sp_dampratio = -(lat_eigvals[2] +lat_eigvals[3])/(2*np.sqrt(lat_eigvals[2]*lat_eigvals[3]))
+# sp_undampnatfreq = 2*Vo/c*np.sqrt(lat_eigvals[2]*lat_eigvals[3])
+# sm_double = np.log(2)/sp_sig
+# sp_period = 2*np.pi/sp_dampnatfreq
+# print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(lat_eigvecs[0,1]),np.arctan2(lat_eigvecs[0,1].imag,lat_eigvecs[0,1].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(lat_eigvecs[1,1]),np.arctan2(lat_eigvecs[1,1].imag,lat_eigvecs[1,1].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(lat_eigvecs[2,1]),np.arctan2(lat_eigvecs[2,1].imag,lat_eigvecs[2,1].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(lat_eigvecs[3,1]),np.arctan2(lat_eigvecs[3,1].imag,lat_eigvecs[3,1].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(lat_eigvecs[4,1]),np.arctan2(lat_eigvecs[4,1].imag,lat_eigvecs[4,1].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(lat_eigvecs[5,1]),np.arctan2(lat_eigvecs[5,1].imag,lat_eigvecs[5,1].real)))
+# print(''.ljust(56,'='))
+# print('The Spiral Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+# print('The Spiral Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+# print('The Spiral Mode doubling time is {0:9.7f}'.format(sp_dampnatfreq))
+# #print('The Spiral Mode Period is {0:9.7f}'.format(sp_period))
+# print()
+# print()
 
 
-print('Dutch Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(eigvals[4].real,eigvals[4].imag))
-print(''.ljust(56,'='))
-sp_sig = -(eigvals[4].real)*2*Vo/c
-sp_99damp = np.log(0.01)/-sp_sig
-sp_dampnatfreq = np.abs(eigvals[4].imag)*2*Vo/c
-sp_dampratio = -(eigvals[4] +eigvals[5])/(2*np.sqrt(eigvals[4]*eigvals[5]))
-sp_undampnatfreq = 2*Vo/c*np.sqrt(eigvals[4]*eigvals[5])
-sp_period = 2*np.pi/sp_dampnatfreq
-print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvecs[0,4]),np.arctan2(eigvecs[0,4].imag,eigvecs[0,4].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvecs[1,4]),np.arctan2(eigvecs[1,4].imag,eigvecs[1,4].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvecs[2,4]),np.arctan2(eigvecs[2,4].imag,eigvecs[2,4].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvecs[3,4]),np.arctan2(eigvecs[3,4].imag,eigvecs[3,4].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvecs[4,4]),np.arctan2(eigvecs[4,4].imag,eigvecs[4,4].real)))
-print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvecs[5,4]),np.arctan2(eigvecs[5,4].imag,eigvecs[5,4].real)))
-print(''.ljust(56,'='))
-print('The Dutch Roll Mode Damping Rate is {0:9.7f}'.format(sp_sig))
-print('The Dutch Roll Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
-print('The Dutch Roll Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
-print('The Dutch Roll Mode Period is {0:9.7f}'.format(sp_period))
-print()
-print()
+# print('Dutch Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(lat_eigvals[4].real,lat_eigvals[4].imag))
+# print(''.ljust(56,'='))
+# sp_sig = -(lat_eigvals[4].real)*2*Vo/c
+# sp_99damp = np.log(0.01)/-sp_sig
+# sp_dampnatfreq = np.abs(lat_eigvals[4].imag)*2*Vo/c
+# sp_dampratio = -(lat_eigvals[4] +lat_eigvals[5])/(2*np.sqrt(lat_eigvals[4]*lat_eigvals[5]))
+# sp_undampnatfreq = 2*Vo/c*np.sqrt(lat_eigvals[4]*lat_eigvals[5])
+# sp_period = 2*np.pi/sp_dampnatfreq
+# print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(lat_eigvecs[0,4]),np.arctan2(lat_eigvecs[0,4].imag,lat_eigvecs[0,4].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(lat_eigvecs[1,4]),np.arctan2(lat_eigvecs[1,4].imag,lat_eigvecs[1,4].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(lat_eigvecs[2,4]),np.arctan2(lat_eigvecs[2,4].imag,lat_eigvecs[2,4].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(lat_eigvecs[3,4]),np.arctan2(lat_eigvecs[3,4].imag,lat_eigvecs[3,4].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(lat_eigvecs[4,4]),np.arctan2(lat_eigvecs[4,4].imag,lat_eigvecs[4,4].real)))
+# print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(lat_eigvecs[5,4]),np.arctan2(lat_eigvecs[5,4].imag,lat_eigvecs[5,4].real)))
+# print(''.ljust(56,'='))
+# print('The Dutch Roll Mode Damping Rate is {0:9.7f}'.format(sp_sig))
+# print('The Dutch Roll Mode 99% Damping Time is {0:9.7f}'.format(sp_99damp))
+# print('The Dutch Roll Mode Damped Frequency is {0:9.7f}'.format(sp_dampnatfreq))
+# print('The Dutch Roll Mode Period is {0:9.7f}'.format(sp_period))
+# print()
+# print()
+printEigen(lat_eigvals[0],lat_eigvecs[:,0],'Roll Mode',True,False,2*Vo/b)
+printEigen(lat_eigvals[1],lat_eigvecs[:,1],'Spiral Mode',True,False,2*Vo/b)
+printEigen(lat_eigvals[4],lat_eigvecs[:,4],'Dutch Roll Mode',True,False,2*Vo/b)
 
+
+
+
+
+print('APPROXIMATIONS:')
+print('Short Period Approximations:')
+Asp = R_yy*(R_rhox + CL_ahat)
+Bsp = R_yy*(CL_a + CD_o) - Cm_q*(R_rhox + CL_ahat) - Cm_ahat*(R_rhox - CL_q)
+Csp = -Cm_q*(CL_a + CD_o) - Cm_a*(R_rhox - CL_q)
+sigma_sp = Vo/c*Bsp/Asp
+omega_sp = Vo/c*np.abs(np.lib.scimath.sqrt(Bsp**2-4*Asp*Csp)/Asp)
+eigenval_sp = c/(2*Vo)*np.complex(-sigma_sp,omega_sp)
+printEigen(eigenval_sp,0,'Short Period Mode',False,False,2*Vo/c)
+
+
+print('Long Period Approximations:')
+sigma_d = g/Vo*CD_o/CLo
+sigma_q = g/Vo*np.abs((CLo - CD_a)*Cm_q/(R_rhox*Cm_a + (CD_o + CL_a)*Cm_q))
+Rs = R_rhox*Cm_a/(R_rhox*Cm_a + (CD_o + CL_a)*Cm_q)
+sigma_psi = -g/Vo*R_gx*Rs*(R_rhox*Cm_q - R_yy*(CD_o + CL_a))/(R_rhox*Cm_a + (CD_o + CL_a)*Cm_q)
+sigma_p = sigma_d + sigma_q + sigma_psi
+omega_p = np.sqrt(2*(g/Vo)**2*Rs - (sigma_d + sigma_q)**2)
+eigenval_p = c/(2*Vo)*np.complex(-sigma_p,omega_p)
+printEigen(eigenval_p,0,'Long Period Mode',False,False,2*Vo/c)
+
+
+print('Roll Mode Approximations: ')
+sigma_r = (rho*Sw*b**2*Vo*Cl_p)/(4*Ixx)*b/(2*Vo)
+printEigen(np.complex(sigma_r,0),0,'Roll Mode',False,False,2*Vo/b)
+
+print('Spiral Mode Approximation: ')
+sigma_s = -(g/Vo)*(Cl_b*Cn_r - Cl_r*Cn_b)/(Cl_b*Cn_p - Cl_p*Cn_b)*b/(2*Vo)
+printEigen(np.complex(sigma_s,0),0,'Spiral Mode',False,False,2*Vo/b)
+
+
+print('Dutch Roll Mode Approximation: ')
+R_yb = rho*Sw*b/(4*W/g)*CY_b
+R_lb = rho*Sw*b**3/(8*Ixx)*Cl_b
+R_nb = rho*Sw*b**3/(8*Ixx)*Cn_b
+R_yp = rho*Sw*b/(4*W/g)*CY_p
+R_lp = rho*Sw*b**3/(8*Ixx)*Cl_p
+R_np = rho*Sw*b**3/(8*Ixx)*Cn_p
+R_yr = rho*Sw*b/(4*W/g)*CY_r
+R_lr = rho*Sw*b**3/(8*Ixx)*Cl_r
+R_nr = rho*Sw*b**3/(8*Ixx)*Cn_r
+R_Ds = (R_lb*(R_gy - (1-R_yr)*R_np) - R_yb*R_lr*R_np)/R_lp
+R_Dc = R_lr*R_np/R_lp
+R_Dp = (R_gy*(R_lr*R_nb - R_lb*R_nr))/(R_lp*(R_nb + R_yb*R_nr)) - R_Ds/R_lp
+sigma_dr = (R_yb + R_nr - R_Dc + R_Dp)/4
+omega_dr = np.sqrt((1-R_yr)*R_nb + R_yb*R_nr + R_Ds - ((R_yb + R_nr)/2)**2)
+printEigen(np.complex(sigma_dr,omega_dr),0,'Dutch Roll Mode', False,False,2*Vo/b)
