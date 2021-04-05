@@ -187,14 +187,14 @@ B[5,5] = 1
 
 C = np.matmul(np.linalg.inv(B),A)
 long_eigvals, long_eigvecs = eig(C)
-print(CD_o)
-print(CD_a)
+
 
 # Calculate the magnitude of each Eigenvalue
 mag = np.abs(long_eigvals)
 
 # Sort by long_eigvals, long_eigvecs by largest magnitude
 idx = mag.argsort()[::-1]
+print(idx)
 long_eigvals = long_eigvals[idx]
 long_eigvecs = long_eigvecs[:,idx]
 # print('Short Period Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(long_eigvals[0].real,np.abs(long_eigvals[0].imag)))
@@ -377,7 +377,7 @@ printEigen(lat_eigvals[4],lat_eigvecs[:,4],'Dutch Roll Mode',True,False,2*Vo/b)
 
 
 print('APPROXIMATIONS:')
-print('Short Period Approximations:')
+print('Short Period Approximation:')
 Asp = R_yy*(R_rhox + CL_ahat)
 Bsp = R_yy*(CL_a + CD_o) - Cm_q*(R_rhox + CL_ahat) - Cm_ahat*(R_rhox - CL_q)
 Csp = -Cm_q*(CL_a + CD_o) - Cm_a*(R_rhox - CL_q)
@@ -387,7 +387,7 @@ eigenval_sp = c/(2*Vo)*np.complex(-sigma_sp,omega_sp)
 printEigen(eigenval_sp,0,'Short Period Mode',False,False,2*Vo/c)
 
 
-print('Long Period Approximations:')
+print('Long Period Approximation:')
 sigma_d = g/Vo*CD_o/CLo
 sigma_q = g/Vo*np.abs((CLo - CD_a)*Cm_q/(R_rhox*Cm_a + (CD_o + CL_a)*Cm_q))
 Rs = R_rhox*Cm_a/(R_rhox*Cm_a + (CD_o + CL_a)*Cm_q)
@@ -398,7 +398,7 @@ eigenval_p = c/(2*Vo)*np.complex(-sigma_p,omega_p)
 printEigen(eigenval_p,0,'Long Period Mode',False,False,2*Vo/c)
 
 
-print('Roll Mode Approximations: ')
+print('Roll Mode Approximation: ')
 sigma_r = (rho*Sw*b**2*Vo*Cl_p)/(4*Ixx)*b/(2*Vo)
 printEigen(np.complex(sigma_r,0),0,'Roll Mode',False,False,2*Vo/b)
 
@@ -408,18 +408,7 @@ printEigen(np.complex(sigma_s,0),0,'Spiral Mode',False,False,2*Vo/b)
 
 
 print('Dutch Roll Mode Approximation: ')
-R_yb = rho*Sw*b/(4*W/g)*CY_b
-R_lb = rho*Sw*b**3/(8*Ixx)*Cl_b
-R_nb = rho*Sw*b**3/(8*Ixx)*Cn_b
-R_yp = rho*Sw*b/(4*W/g)*CY_p
-R_lp = rho*Sw*b**3/(8*Ixx)*Cl_p
-R_np = rho*Sw*b**3/(8*Ixx)*Cn_p
-R_yr = rho*Sw*b/(4*W/g)*CY_r
-R_lr = rho*Sw*b**3/(8*Ixx)*Cl_r
-R_nr = rho*Sw*b**3/(8*Ixx)*Cn_r
-R_Ds = (R_lb*(R_gy - (1-R_yr)*R_np) - R_yb*R_lr*R_np)/R_lp
-R_Dc = R_lr*R_np/R_lp
-R_Dp = (R_gy*(R_lr*R_nb - R_lb*R_nr))/(R_lp*(R_nb + R_yb*R_nr)) - R_Ds/R_lp
-sigma_dr = (R_yb + R_nr - R_Dc + R_Dp)/4
-omega_dr = np.sqrt((1-R_yr)*R_nb + R_yb*R_nr + R_Ds - ((R_yb + R_nr)/2)**2)
+R_Ds = (Cl_b*(R_gy*R_rhoy*R_zz - (R_rhoy - CY_r)*Cn_p) - CY_b*Cl_r*Cn_p)/(R_rhoy*R_zz*Cl_p)
+sigma_dr = Vo/b*(CY_b/R_rhoy + Cn_r/R_zz - Cl_r*Cn_p/(Cl_p*R_zz) + R_gy*(Cl_r*Cn_b - Cl_b*Cn_r)/(Cl_p*(Cn_b + CY_b*Cn_r/R_rhoy) - R_xx*R_Ds/Cl_p))*b/(2*Vo)
+omega_dr = np.sqrt((1-CY_r/R_rhoy)*(Cn_b/R_zz) + CY_b*Cn_r/(R_rhoy*R_zz) + R_Ds - (1/4)*(CY_b/R_rhoy + Cn_r/R_zz)**2)
 printEigen(np.complex(sigma_dr,omega_dr),0,'Dutch Roll Mode', False,False,2*Vo/b)
