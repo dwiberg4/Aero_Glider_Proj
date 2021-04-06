@@ -1,9 +1,25 @@
 import numpy as np
 from scipy.linalg import eig
 import json
+
+
 input = 'BaselineGlider.json'
 
 def printEigen(eigval,eigvec,mode,lat,long,dimensional):
+    """Prints an Eigenvalue Summary to the terminal with data depending on the information given to the Eigenvalue
+    The program must be given an eigenvalue to be able to do any printing. The eigenvector is only important to print
+    the amplitude and phase table. The mode is determined by the mode string variable. The Lat and Long variables determined
+    which variables to use when printing the table of amplitude and phase tables. The final variable dimensional is whether to
+    multiply 2Vo/c or 2Vo/b to get final results.
+
+    Args:
+        eigval (np complex): Complex number that represents the eigen value of the system.
+        eigvec (1D np array dtype = complex): Vector of complex numberst that represent the eigenvector that corresponds to the value in eigval.
+        mode (str): A string that gives the name of mode this eigval corresponds to. 
+        lat (Bool): If true, the lateral amplitude and phase table will be printed. 
+        long (Bool): if True, the longitudinal amplitude and phase table will be printed. Requires an eigvector.
+        dimensional (float): A float to represent the value to dimensionalize with. 
+    """
     print('The {0:<20s} is given by {1:9.7f} ± {2:9.7f} i.'.format(mode,eigval.real,np.abs(eigval.imag)))
     sig = -eigval.real*dimensional
     damped = (0>eigval.real)
@@ -11,6 +27,7 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
     damp_rate = -eigval.real
 
     if damp_nat_freq > 0.000001:
+        # If there is an imaginary part calculate and print all of these values.
         eig1 = np.complex(sig,damp_nat_freq)
         eig2 = np.complex(sig,-damp_nat_freq)
         undamp_freq = np.sqrt(eig1*eig2)*dimensional
@@ -39,6 +56,7 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
         print('The {1:<20s} Period is {0:9.7f}'.format(period,mode))   
         print('The {1:<20s} Damped Frequency is {0:9.7f}'.format(damp_nat_freq,mode))                   
     else:
+        # If there is not an imaginary part then do not print phase in the table.
         if lat:
             print(''.ljust(56,'='))
             print('{0:<15s}{1:>15s}'.format('Component','Amplitude'))
@@ -59,13 +77,12 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
             print('{0:<20s}{1:>9.7f}'.format('Δφ',np.abs(eigvec[4])))
             print('{0:<20s}{1:>9.7f}'.format('Δψ',np.abs(eigvec[5])))
             print(''.ljust(56,'='))
-        undamp_freq = 'N/A'
-        period = 'N/A'
-        damp_ratio = 'N/A'
     if damped:
+        # If the system is damped, print a 99% Damping Time.
         damp_time = -np.log(0.01)/(sig)          # 99% damping time
         print('The {0:<20s} 99% Damping Time is {1:9.7f}'.format(mode,damp_time))
     else:
+        # If the system is not damped, print a Doubling Time instead.
         damp_time = -np.log(2)/sig             # Doubling Time
         print('The {0:<20s} Doubling Time is {1:9.7f}'.format(mode,damp_time))
     print('The {1:<20s} Damping Rate is {0:9.7f}'.format(sig,mode))
@@ -81,6 +98,7 @@ with open(input,'r') as f:
     aircraft = json.load(f)
 f.close()
 
+## Read in all values from the JSON file.
 Sw = aircraft["aircraft"]["wing_area[ft^2]"]
 b = aircraft["aircraft"]["wing_span[ft]"]
 W = aircraft["operating"]["weight[lbf]"]
@@ -192,11 +210,13 @@ long_eigvals, long_eigvecs = eig(C)
 # Calculate the magnitude of each Eigenvalue
 mag = np.abs(long_eigvals)
 
-# Sort by long_eigvals, long_eigvecs by largest magnitude
+# Get index that sorts the magnitudes from largest to smallest.
 idx = mag.argsort()[::-1]
-print(idx)
+#sort both values and vectors by that index.
 long_eigvals = long_eigvals[idx]
 long_eigvecs = long_eigvecs[:,idx]
+
+## These are commented out and replaced by the printEigen function, but I left them for checking purposes.
 # print('Short Period Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(long_eigvals[0].real,np.abs(long_eigvals[0].imag)))
 # print(''.ljust(56,'='))
 # sp_sig = -(long_eigvals[0].real)*2*Vo/c
@@ -242,6 +262,8 @@ long_eigvecs = long_eigvecs[:,idx]
 # print('The Long Period Mode Period is {0:9.7f}'.format(sp_period))
 # print()
 # print()
+
+# All of that commented code is contained in these two function calls.
 printEigen(long_eigvals[0],long_eigvecs[:,0],'Short Period Mode',False,True,2*Vo/c)
 printEigen(long_eigvals[2],long_eigvecs[:,2],'Long Period Mode',False,True,2*Vo/c)
 
@@ -290,16 +312,13 @@ lat_eigvals, lat_eigvecs = eig(F)
 mag = np.where(lat_eigvals.imag == 0,np.abs(lat_eigvals),np.abs(lat_eigvals)-1000)
 
 
-#TODO Add checks for oscillation(Imaginary) and converge/diverge
-#TODO Create print function to print everything given an eigval and eigvector and name?
-# Sort by lat_eigvals, lat_eigvecs by largest magnitude
+# Sort by lat_eigvals, lat_eigvecs by largest magnitude if there is no imaginary part.
 idx = mag.argsort()[::-1]
 lat_eigvals = lat_eigvals[idx]
 lat_eigvecs = lat_eigvecs[:,idx]
 
-print('The Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(lat_eigvals[0].real,lat_eigvals[0].imag))
-print(''.ljust(56,'='))
-
+# print('The Roll Mode is given by {0:9.7f} ± {1:9.7f} i.'.format(lat_eigvals[0].real,lat_eigvals[0].imag))
+# print(''.ljust(56,'='))
 # sp_sig = -(lat_eigvals[0].real)*2*Vo/c
 # sp_99damp = np.log(0.01)/-sp_sig
 # sp_dampnatfreq = np.abs(lat_eigvals[0].imag)*2*Vo/c
@@ -368,6 +387,8 @@ print(''.ljust(56,'='))
 # print('The Dutch Roll Mode Period is {0:9.7f}'.format(sp_period))
 # print()
 # print()
+
+# All of the above code is replaced by these values.
 printEigen(lat_eigvals[0],lat_eigvecs[:,0],'Roll Mode',True,False,2*Vo/b)
 printEigen(lat_eigvals[1],lat_eigvecs[:,1],'Spiral Mode',True,False,2*Vo/b)
 printEigen(lat_eigvals[4],lat_eigvecs[:,4],'Dutch Roll Mode',True,False,2*Vo/b)
