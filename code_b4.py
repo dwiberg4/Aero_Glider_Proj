@@ -253,4 +253,12 @@ sp_eig1,sp_eig2,sigma_sp,w_d_sp = mapprox.spapprox(Vo,b,c,CL_a,CD_o,Cm_a,CL_q,Rr
 # PHUGOID Approx
 ph_eig1,ph_eig2,sigma_ph,w_d_ph = mapprox.phapprox(g,Vo,b,c,CD_o,CLo,CD_a,Cm_q,Rrhox,Cm_a,CL_a,Rgx,Ryy,True)
 
+# ROLL Approx
+rl_eig,sigma_rl = mapprox.rlapprox(Vo,b,Sw,Ixx,rho,Cl_p,Rxx,True)
+# SPIRAL Approx
+sr_eig,sigma_sr = mapprox.srapprox(g,Vo,b,Cl_b,Cn_r,Cl_r,Cn_b,Cn_p,Cl_p,True)
+# DUTCH ROLL Approx
+dr_eig1,dr_eig2,sigma_dr,w_d_dr = mapprox.drapprox(Vo,b,CY_b,Cn_r,Cl_r,Cn_p,Cn_b,Cl_b,Cl_p,CY_r,Rgy,Rrhoy,Rzz,Rxx,True)
+
+
 

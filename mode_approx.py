@@ -26,7 +26,8 @@ def spapprox(Vo,b,c,CL_a,CD_o,Cm_a,CL_q,Rrhox,Cm_q,CL_ahat,Cm_ahat,Ryy,printer):
     period = ((2*np.pi) / w_d) 
 
     if printer:
-        print("\n\n\n\nSHORT PERIOD MODE APPROXIMATION-----------\n")
+        print("\n\n\n\nSHORT PERIOD MODE APPROXIMATION-------------")
+        print("--------------------------------------------")
         print("A: \t\t\t",A)
         print("B: \t\t\t",B)
         print("C: \t\t\t",C)
@@ -64,7 +65,8 @@ def phapprox(g,Vo,b,c,CD_o,CLo,CD_a,Cm_q,Rrhox,Cm_a,CL_a,Rgx,Ryy,printer):
     period = ((2*np.pi) / w_d_p) 
 
     if printer:
-        print("\n\n\n\nPHUGOID PERIOD APPROXIMATION---------------\n")
+        print("\n\n\n\nPHUGOID MODE APPROXIMATION------------------")
+        print("--------------------------------------------")
         print("Rps: \t\t\t",Rps)
         print("sigma_D: \t\t",sigma_D)
         print("sigma_q: \t\t",sigma_q)
@@ -79,4 +81,53 @@ def phapprox(g,Vo,b,c,CD_o,CLo,CD_a,Cm_q,Rrhox,Cm_a,CL_a,Rgx,Ryy,printer):
     return eig1,eig2,sigma_p,w_d_p
         
 # ROLL MODE Approximation
+def rlapprox(Vo,b,Sw,Ixx,rho,Cl_p,Rxx,printer):
+    eig = Cl_p / Rxx
 
+    sigma = ((-rho * Sw * (b**2) * Vo)/ (4 * Ixx)) * Cl_p
+
+    nn = (-np.log(0.01)) / sigma
+
+    if printer:
+        print("\n\n\n\nROLL MODE APPROXIMATION---------------------")
+        print("--------------------------------------------")
+        print("\neig: \t\t\t",eig)
+        print("\nDamping Rate: \t\t",sigma)
+        print("99% Damping Time: \t",nn)
+    
+    return eig,sigma
+
+# SPIRAL MODE Approximation
+def srapprox(g,Vo,b,Cl_b,Cn_r,Cl_r,Cn_b,Cn_p,Cl_p,printer):
+    coeffs = ( ((Cl_b*Cn_r) - (Cl_r*Cn_b)) / ((Cl_b*Cn_p) - (Cl_p*Cn_b)) )
+
+    eig = ((-g * b) / (2* (Vo**2))) * coeffs
+
+    sigma = (g/Vo) * coeffs
+
+    nn = (-np.log(0.01)) / sigma
+    dub = (-np.log(2)) / sigma
+
+    if printer:
+        print("\n\n\n\nSPIRAL MODE APPROXIMATION-------------------")
+        print("--------------------------------------------")
+        print("coeffs: \t\t",coeffs)
+        print("\neig: \t\t\t",eig)
+        print("\nDamping Rate: \t\t",sigma)
+        print("99% Damping Time: \t",nn)
+        print("Doubling Time: \t\t",dub)
+    
+    return eig,sigma
+
+# DUTCH ROLL MODE Approximation
+def drapprox(Vo,b,CY_b,Cn_r,Cl_r,Cn_p,Cn_b,Cl_b,Cl_p,CY_r,Rgy,Rrhoy,Rzz,Rxx,printer):
+    top = (Cl_b * ((Rgy*Rrhoy*Rzz) - ((Rrhoy - CY_r)* Cn_p))) - (CY_b*Cl_r*Cn_p)
+    RDs = top / (Rrhoy * Rzz * Cl_p)
+
+    a = (1- (CY_r/Rrhoy)) * (Cn_b / Rzz)
+    b = ((CY_b*Cn_r) / (Rrhoy*Rzz))
+    c = ((CY_b/Rrhoy) + (Cn_r/Rzz))
+    tog = a + b + RDs - (0.25 * (c**2))
+    w_d = ((2*Vo) / b) * np.sqrt(tog)
+
+    
