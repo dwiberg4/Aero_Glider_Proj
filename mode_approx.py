@@ -3,7 +3,7 @@
 import numpy as np
 import cmath as cm
 
-# SHORT PERIOD Approximation
+# SHORT PERIOD MODE Approximation
 def spapprox(Vo,b,c,CL_a,CD_o,Cm_a,CL_q,Rrhox,Cm_q,CL_ahat,Cm_ahat,Ryy,printer):
     A = Ryy * (Rrhox + CL_ahat)
     B = (Ryy* (CL_a + CD_o)) - (Cm_q* (Rrhox + CL_ahat)) - (Cm_ahat* (Rrhox - CL_q))
@@ -46,7 +46,7 @@ def spapprox(Vo,b,c,CL_a,CD_o,Cm_a,CL_q,Rrhox,Cm_q,CL_ahat,Cm_ahat,Ryy,printer):
     
     return eig1,eig2,sigma,w_d
 
-# PHUGOID Approximation
+# PHUGOID MODE Approximation
 def phapprox(g,Vo,b,c,CD_o,CLo,CD_a,Cm_q,Rrhox,Cm_a,CL_a,Rgx,Ryy,printer):
     Rps = (Rrhox * Cm_a) / ( (Rrhox * Cm_a) + ((CD_o + CL_a) * Cm_q) )
     sigma_D = (g/Vo) * (CD_o/CLo)
@@ -78,5 +78,5 @@ def phapprox(g,Vo,b,c,CD_o,CLo,CD_a,Cm_q,Rrhox,Cm_a,CL_a,Rgx,Ryy,printer):
     
     return eig1,eig2,sigma_p,w_d_p
         
-
+# ROLL MODE Approximation
 
