@@ -124,10 +124,38 @@ def drapprox(Vo,b,CY_b,Cn_r,Cl_r,Cn_p,Cn_b,Cl_b,Cl_p,CY_r,Rgy,Rrhoy,Rzz,Rxx,prin
     top = (Cl_b * ((Rgy*Rrhoy*Rzz) - ((Rrhoy - CY_r)* Cn_p))) - (CY_b*Cl_r*Cn_p)
     RDs = top / (Rrhoy * Rzz * Cl_p)
 
-    a = (1- (CY_r/Rrhoy)) * (Cn_b / Rzz)
-    b = ((CY_b*Cn_r) / (Rrhoy*Rzz))
-    c = ((CY_b/Rrhoy) + (Cn_r/Rzz))
-    tog = a + b + RDs - (0.25 * (c**2))
+    one = (1- (CY_r/Rrhoy)) * (Cn_b / Rzz)
+    two = ((CY_b*Cn_r) / (Rrhoy*Rzz))
+    tre = ((CY_b/Rrhoy) + (Cn_r/Rzz))
+    tog = one + two + RDs - (0.25 * (tre**2))
     w_d = ((2*Vo) / b) * np.sqrt(tog)
 
+    one = (CY_b / Rrhoy) + (Cn_r / Rzz)
+    two = ((Cl_r*Cn_p) / (Cl_p*Rzz))
+    ctop = Rgy * ((Cl_r*Cn_b) - (Cl_b*Cn_r))
+    cbot = Cl_p * (Cn_b + (CY_b* (Cn_r/Rrhoy)) )
+    four = Rxx * (RDs/Cl_p)
+    tog = one - two + (ctop/cbot) - four
+    sigma = (-Vo/b) * tog
+
+
+    eig1 = (b/(2*Vo)) * (-sigma + w_d)
+    eig2 = (b/(2*Vo)) * (-sigma - w_d)
+
+    nn = (-np.log(0.01)) / sigma
+    period = ((2*np.pi) / w_d) 
+
+    if printer:
+        print("\n\n\n\nDUTCH ROLL MODE APPROXIMATION-------------")
+        print("--------------------------------------------")
+        print("RDs: \t\t\t",RDs)
+        print("\neig1: \t\t\t",eig1)
+        print("eig2: \t\t\t",eig2)
+        print("\nDamping Rate: \t\t",sigma)
+        print("Damped Nat Frequency: \t",w_d)
+        print("99% Damping Time: \t",nn)
+        print("Period: \t\t",period)
     
+    return eig1,eig2,sigma,w_d
+
+
