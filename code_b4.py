@@ -7,6 +7,8 @@
 import numpy as np 
 import json
 import eigensovler as myeig
+import eigen_approx as approx
+import mode_approx as mapprox
 
 
 #### ------------------------------------------------------ ####
@@ -167,6 +169,23 @@ E[3,3] = 1
 E[4,4] = 1
 E[5,5] = 1
 
+# G and H for Longitudinal APPROXIMATION
+G = np.zeros((2,2))
+H = np.zeros((2,2))
+
+G[0,0] = (-CL_a - CD_o)
+G[1,0] = Cm_a
+G[0,1] = (-CL_q + Rrhox)
+G[1,1] = Cm_q
+
+H[0,0] = (Rrhox + CL_ahat)
+H[1,0] = -Cm_ahat
+H[0,1] = 0
+H[1,1] = Ryy
+
+# J and K for Lateral APPROXIMATION
+J = np.zeros((2,2))
+K = np.zeros((2,2))
 
 
 # print(A)
@@ -221,3 +240,25 @@ eigvals, eigvecs, vals = myeig.eig_solve(Vo,b,c,A,B, char = True, file = True, t
 
 # Lateral Analysis       
 eigvals, eigvecs, vals = myeig.eig_solve(Vo,b,c,D,E, char = True, file = True, title = "Lateral")
+
+eigvals, eigvecs, vals = approx.eig_solve(Vo,b,c,G,H, char = True, file = True, title = "Longitudinal")
+
+
+
+#### ------------------------------------------------------ ####
+#### ------------------Mode APPROXIMATIONS----------------- ####
+
+# SHORT PERIOD Approx
+sp_eig1,sp_eig2,sigma_sp,w_d_sp = mapprox.spapprox(Vo,b,c,CL_a,CD_o,Cm_a,CL_q,Rrhox,Cm_q,CL_ahat,Cm_ahat,Ryy,True)
+# PHUGOID Approx
+ph_eig1,ph_eig2,sigma_ph,w_d_ph = mapprox.phapprox(g,Vo,b,c,CD_o,CLo,CD_a,Cm_q,Rrhox,Cm_a,CL_a,Rgx,Ryy,True)
+
+# ROLL Approx
+rl_eig,sigma_rl = mapprox.rlapprox(Vo,b,Sw,Ixx,rho,Cl_p,Rxx,True)
+# SPIRAL Approx
+sr_eig,sigma_sr = mapprox.srapprox(g,Vo,b,Cl_b,Cn_r,Cl_r,Cn_b,Cn_p,Cl_p,True)
+# DUTCH ROLL Approx
+dr_eig1,dr_eig2,sigma_dr,w_d_dr = mapprox.drapprox(Vo,b,CY_b,Cn_r,Cl_r,Cn_p,Cn_b,Cl_b,Cl_p,CY_r,Rgy,Rrhoy,Rzz,Rxx,True)
+
+
+
