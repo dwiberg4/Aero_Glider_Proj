@@ -197,7 +197,7 @@ K = np.zeros((2,2))
 #### ------------------------------------------------------ ####
 #### -------------------Eigenprob Calcs-------------------- ####
 # Longitudinal Analysis
-eigvals, eigvecs, vals = myeig.eig_solve(Vo,b,c,A,B, char = True, file = True, title = "Longitudinal")
+eigvals, eigvecs, vals, dim_eigs = myeig.eig_solve(Vo,b,c,A,B, char = True, file = True, title = "Longitudinal")
 
 # #_________0______1_______2_____3_______4____5_____6_____7_______8______9_____10__
 # vals = [w_n_d, sigmas, taus, halves, nines,dubs, w_n, zetas, periods, amps, phas]
@@ -239,7 +239,7 @@ eigvals, eigvecs, vals = myeig.eig_solve(Vo,b,c,A,B, char = True, file = True, t
 
 
 # Lateral Analysis       
-eigvals, eigvecs, vals = myeig.eig_solve(Vo,b,c,D,E, char = True, file = True, title = "Lateral")
+eigvals, eigvecs, vals, dim_eigs = myeig.eig_solve(Vo,b,c,D,E, char = True, file = True, title = "Lateral")
 
 eigvals, eigvecs, vals = approx.eig_solve(Vo,b,c,G,H, char = True, file = True, title = "Longitudinal")
 

@@ -14,13 +14,6 @@ from scipy.linalg import eig
 # kwargs: char
 #   Will return a dictionary of the behavior characteristics
 def eig_solve(Vo,b,c,*args, **kwargs):
-    if "title" in kwargs and kwargs["title"] == "Longitudinal":
-        t_dimless = (c/(2*Vo))
-    elif "title" in kwargs and kwargs["title"] == "Lateral":
-        t_dimless = (b/(2*Vo))
-    else:
-        print("\nNo type specified. What Non-Dimensional Time do you want?")
-    
     if (len(args)==2):
         #print("\n\tWe will now begin the Generalize Eigensolver routine\n")
         C = np.matmul(np.linalg.inv(args[1]),args[0])
@@ -30,7 +23,16 @@ def eig_solve(Vo,b,c,*args, **kwargs):
         C = args[0]
         eigvals, eigvecs = eig(C)
 
-
+    if "title" in kwargs and kwargs["title"] == "Longitudinal":
+        t_dimless = (c/(2*Vo))
+        dim_eigs = eigvals / t_dimless
+    elif "title" in kwargs and kwargs["title"] == "Lateral":
+        t_dimless = (b/(2*Vo))
+        dim_eigs = eigvals / t_dimless
+    else:
+        print("\nNo type specified. What Non-Dimensional Time do you want?")
+        dim_eigs = np.zeros((6,6))
+    
     #print(eigvecs)
     #for i in range(eigvals.size):   
         #print("The %dth index eigenvalue is: %f" %(i,eigvals[i]))
@@ -42,11 +44,11 @@ def eig_solve(Vo,b,c,*args, **kwargs):
         vals = 0
 
     if "file" in kwargs and "title" in kwargs and kwargs["file"]:
-        res_out(args,C,eigvals,eigvecs,vals,kwargs["title"])
+        res_out(args,C,eigvals,eigvecs,vals,dim_eigs,kwargs["title"])
 
     # #_________0______1_______2_____3_______4____5_____6_____7_______8______9_____10__
     # vals = [w_n_d, sigmas, taus, halves, nines,dubs, w_n, zetas, periods, amps, phas]
-    return (eigvals,eigvecs,vals)
+    return (eigvals,eigvecs,vals,dim_eigs)
     
     
 def beh_char(eigvals,eigvecs,t):
@@ -77,7 +79,7 @@ def beh_char(eigvals,eigvecs,t):
 
 
 # Results File writer Function
-def res_out(args,C,eigvals,eigvecs,vals,title):
+def res_out(args,C,eigvals,eigvecs,vals,dim_eigs,title):
     name = title + "_Eig_sol.txt"
     with open(name, 'w') as resout:
         if (len(args)==2):
@@ -123,6 +125,13 @@ def res_out(args,C,eigvals,eigvecs,vals,title):
             for j in range(eigvecs.shape[1]):
                 str_out = '{:>20.6f}'.format(eigvecs[i,j])
                 resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('DIMENSIONAL Eigenvalues: \n\n')
+        for i in range(dim_eigs.size):
+            str_out = '{:>20.12f}'.format(dim_eigs[i])
+            resout.write(str_out)
             resout.write('\n')
         resout.write('\n')
 
