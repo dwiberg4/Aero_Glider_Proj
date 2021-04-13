@@ -5,6 +5,7 @@
 
 import numpy as np 
 import math
+import cmath as cm
 from scipy.linalg import eig
 
 # Eigensolver that takes for arguments either 1 or 2 matrices
@@ -39,7 +40,11 @@ def eig_solve(Vo,b,c,*args, **kwargs):
         #print("\tThe corresponding eigenvector is:", eigvecs[:,i])
     
     if "char" in kwargs and kwargs["char"]:
-        vals = beh_char(eigvals,eigvecs,t_dimless)
+        if "title" in kwargs and kwargs["title"] == "Longitudinal":
+            which = [(2,3),(4,5)]
+        elif "title" in kwargs and kwargs["title"] == "Lateral":
+            which = [(3,4)]
+        vals = beh_char(eigvals,eigvecs,t_dimless,which)
     else:
         vals = 0
 
@@ -51,7 +56,7 @@ def eig_solve(Vo,b,c,*args, **kwargs):
     return (eigvals,eigvecs,vals,dim_eigs)
     
     
-def beh_char(eigvals,eigvecs,t):
+def beh_char(eigvals,eigvecs,t,which):
     # Recieves vector of eigvals; returns all the behavior characteristics
     w_n_d = damp_nat_freq(eigvals,t)
     #print("\n\t\tThe Damped Natural Frequencies are: \n",w_n_d)
@@ -65,9 +70,9 @@ def beh_char(eigvals,eigvecs,t):
     #print("\n\t\tThe Times to 99'%' are: \n\n", nines)
     dubs = double(sigmas)
     #print("\n\t\tThe Double Times are: \n\n", dubs)
-    w_n = nat_freq(eigvals,t)
+    w_n = nat_freq(eigvals,t,which)
     #print("\n\t\tThe Natural frequencies for the eigenvalue pairs are: \n\n",w_n)
-    zetas = damp_ratio(eigvals)
+    zetas = damp_ratio(eigvals,which)
     #print("\n\t\tThe Damping Ratios for the eigenvalue pairs are: \n\n",zetas)
 
     periods = period_func(w_n_d)
@@ -185,6 +190,20 @@ def res_out(args,C,eigvals,eigvecs,vals,dim_eigs,title):
             resout.write(str_out)
             resout.write('\n')
         resout.write('\n')
+
+        resout.write('Damping Ratio (For Complex Eigenvalue Pairs): \n\n')
+        for i in range(vals[7].size):
+            str_out = '{:>20.12f}'.format(float(vals[7][i]))
+            resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
+
+        resout.write('Undamped Natural Frequency (For Complex Eigenvalue Pairs): \n\n')
+        for i in range(vals[6].size):
+            str_out = '{:>20.12f}'.format(float(vals[6][i]))
+            resout.write(str_out)
+            resout.write('\n')
+        resout.write('\n')
     
 
 def damp_nat_freq(eigvals,t):
@@ -211,23 +230,25 @@ def double(sigmas):
     # Recieves vector of sigmas; returns corresponding Double Time vector
     return (-np.log(2)) / sigmas 
 
-def nat_freq(eigvals,t):
+def nat_freq(eigvals,t,which):
     # Recieves vector of eigvals; returns 1/2 size vector of natural
     #   frequencies of eigenvalue pairs
-    w_n = np.zeros(((int(eigvals.size/2)),1),dtype = 'complex_')
-    for i in range(int(eigvals.size/2)):
-        j = i*2
-        w_n[i] = (np.sqrt(eigvals[j]*eigvals[j+1])) / t
+    temps = np.zeros((len(which),1),dtype = 'complex_')
+    w_n = np.zeros((len(which),1))
+    for i in range(len(which)):
+        temps[i] = (cm.sqrt(eigvals[which[i][0]]*eigvals[which[i][1]])) / t
+        w_n[i] = float(temps[i].real)
     return w_n
 
-def damp_ratio(eigvals):
+def damp_ratio(eigvals,which):
     # Recieves vector of eigvals; returns 1/2 size vector of damping
     # ratios for eigenvalue pairs
-    zeta = np.zeros(((int(eigvals.size/2)),1),dtype = 'complex_')
-    for i in range(int(eigvals.size/2)):
-        j = i*2
-        top = -(eigvals[j] + eigvals[j+1])
-        zeta[i] = top / (2* (np.sqrt(eigvals[j]*eigvals[j+1])) )
+    temps = np.zeros((len(which),1),dtype = 'complex_')
+    zeta = np.zeros((len(which),1))
+    for i in range(len(which)):
+        top = -(eigvals[which[i][0]] + eigvals[which[i][1]])
+        temps[i] = top / (2* (cm.sqrt(eigvals[which[i][0]]*eigvals[which[i][1]])) )
+        zeta[i] = float(temps[i].real)
     return zeta
 
 def period_func(w_n_d):
