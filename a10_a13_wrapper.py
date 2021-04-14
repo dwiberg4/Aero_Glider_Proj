@@ -373,6 +373,11 @@ def main(input_file,plot):
     with open("0000.json", "r") as f:
         sim_json = json.load(f)
 
+        sim_json["aircraft"]["name"] = "OUR_Glider"
+        sim_json["aircraft"]["wing_area[ft^2]"] = params["Sw"]
+        sim_json["aircraft"]["wing_span[ft]"] = params["b"]
+        sim_json["operating"]["weight[lbf]"] = params["W"]
+        
         sim_json["reference"]["CL"] = data_mat[15][1]
 
         sim_json["reference"]["Ixx[slugs*ft^2]"] = 2.0045561
