@@ -110,7 +110,7 @@ def main(input_file,plot):
     #                                         Create Data Matrix, cases, and fill
     # Columns:
     # 0: aoa,  1: CL,  2: CD,  3: Cm,  4: CL_a,  5: Cm_a,  6: SM,  7: Cl_b,  8: Cn_b
-    aoa = np.linspace(-14,14,29)
+    aoa = np.linspace(-5,14,29)
     data_mat = np.zeros((aoa.size,9))
     #            Then Create Functions Matrix, use data, call functions, and fill
     # Columns:
@@ -250,6 +250,27 @@ def main(input_file,plot):
     C_D2 = D_coeffs[0]
     C_D1 = D_coeffs[1]
     C_D0 = D_coeffs[2]
+
+    li = np.linspace(-1,2.75,30)
+    dr = np.zeros((li.size))
+    for i in range(li.size):
+        dr[i] = C_D0 + (C_D1 * li[i]) + (C_D2 * (li[i]**2))
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    ax.plot(li,dr,label="polyfit")
+    ax.plot(data_mat[:,1],data_mat[:,2],label="DATA")
+    ax.legend()
+    # if 'xlabel' in kwargs:
+    #     ax.set_xlabel(kwargs['xlabel'])
+    # if 'ylabel' in kwargs:
+    #     ax.set_ylabel(kwargs['ylabel'])
+    # if 'title' in kwargs:
+    #     ax.set_title(kwargs['title'])
+    plt.show()
+    fig.savefig("Comparison.png") 
+    # title = "Drag as a Function of Lift"
+    #     gfs.gen_plotter(data_mat[:,1],data_mat[:,2],xlabel='LIFT',ylabel='Drag',title=title,save='fig_D(lift).png')
 
     ####---------------------------------------------------------------------####
     #                                               Perform Airspeed Calculations
@@ -425,7 +446,7 @@ def main(input_file,plot):
 
 
 input_file = "scene.json"
-(results,params) = main(input_file,False)
+(results,params) = main(input_file,True)
 
 print("\n\nThe PARAMETERS Dictionary is as follows: ")
 pprint.pprint(params)
