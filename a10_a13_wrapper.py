@@ -279,6 +279,7 @@ def main(input_file,plot):
         "beta" : 0.0
     }
     my_scene.set_aircraft_state(state = state, aircraft = "glider_2.0")
+    # 0.440613
     target_CL = my_scene.target_CL(CL = 0.440613, filename="target_CL.txt", set_state = True)
     FM_results = my_scene.solve_forces(filename="Output_FM",report_by_segment=True, dimensional=False, non_dimensional=True,)
     derivs = my_scene.derivatives(filename="Output_Derivs",report_by_segment=True)
@@ -380,7 +381,7 @@ def main(input_file,plot):
         sim_json["operating"]["climb[deg]"] = 0.0
         sim_json["operating"]["density[slugs/ft^3]"] = 0.0023769
         
-        sim_json["reference"]["CL"] = data_mat[15][1]
+        sim_json["reference"]["CL"] = results["CL"] # data_mat[15][1]
 
         sim_json["reference"]["Ixx[slugs*ft^2]"] = 676.95274356/144
         sim_json["reference"]["Iyy[slugs*ft^2]"] = 248.76398000/144
