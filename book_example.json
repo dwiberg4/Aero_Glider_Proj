@@ -1,0 +1,50 @@
+{
+    "aircraft": {
+        "name": "OUR_Glider",
+        "wing_area[ft^2]": 185,
+        "wing_span[ft]": 33
+    },
+    "operating": {
+        "weight[lbf]": 2800,
+        "climb[deg]": 0.0,
+        "density[slugs/ft^3]": 0.0023769
+    },
+    "reference": {
+        "CL": 0.393061,
+        "Ixx[slugs*ft^2]":  1000,
+        "Iyy[slugs*ft^2]": 3000,
+        "Izz[slugs*ft^2]": 3500,
+        "Ixy[slugs*ft^2]": 0,
+        "Ixz[slugs*ft^2]": 30,
+        "Iyz[slugs*ft^2]": 0,
+        "hx": 0,
+        "hy": 0,
+        "hz": 0,
+        "CD0": 0.02422167,
+        "CD1": 0.05162161,
+        "CD2": 0.03552099,
+        "CL,a": 4.40,
+        "Cl,a": 0,
+        "Cm,a": -0.68,
+        "Cn,a": 0,
+        "CL,ahat": 1.6,
+        "CD,ahat": 0,
+        "Cm,ahat": -4.35,
+        "CL,uhat": 0,
+        "CD,uhat": 0,
+        "Cm,uhat": 0,
+        "CY,b": -0.560,
+        "Cl,b": -0.075,
+        "Cm,b": 0,
+        "Cn,b": 0.07,
+        "CY,p": -0,
+        "Cl,p": -0.410,
+        "Cn,p": -0.0575,
+        "CL,q": 3.80,
+        "CD,q": 0,
+        "Cm,q": -9.95,
+        "CY,r": 0.240,
+        "Cl,r": 0.105,
+        "Cn,r": -0.125
+    }
+}

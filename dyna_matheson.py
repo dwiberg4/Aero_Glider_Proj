@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 
-input = 'edited_0000.json'
+input = 'book_example.json'
 
 def printEigen(eigval,eigvec,mode,lat,long,dimensional):
     """Prints an Eigenvalue Summary to the terminal with data depending on the information given to the Eigenvalue
@@ -29,19 +29,22 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
         print('The dimensionless eigenvector is given by: \n {0:9.7f} \n {1:9.7f} \n {2:9.7f} \n {3:9.7f} \n {4:9.7f} \n {5:9.7f} \n'.format(eigvec[0],\
             eigvec[1],eigvec[2],eigvec[3],eigvec[4],eigvec[5]))
     sig = -eigval.real
+    omega = eigval.imag
     damped = (0>eigval.real)
-    damp_nat_freq = np.abs(eigval.imag)
+    damp_nat_freq = np.abs(eigval.imag)*dimensional
     damp_rate = -eigval.real*dimensional
     damp_ratio = sig*dimensional
     undamp_freq = 0.0
     if damp_nat_freq > 0.000001:
         # If there is an imaginary part calculate and print all of these values.
-        eig1 = np.complex(sig,damp_nat_freq)
-        eig2 = np.complex(sig,-damp_nat_freq)
-        undamp_freq = (np.sqrt(eig1*eig2)*dimensional).real
-        period = 2*np.pi/damp_nat_freq
-        damp_ratio = (-(eig1 + eig2)/(2*np.sqrt(eig1*eig2))).real
-        if lat:
+        eig1 = np.complex(-eigval.real,eigval.imag)*dimensional
+        eig2 = np.complex(-eigval.real,-eigval.imag)*dimensional
+        print(eig1)
+        print(eig2)
+        undamp_freq = (np.sqrt(eig1*eig2)).real
+        period = 2*np.pi/(damp_nat_freq)
+        damp_ratio = ((eig1 + eig2)/(2*np.sqrt(eig1*eig2))).real
+        if long:
             print(''.ljust(56,'='))
             print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
             print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(eigvec[0]),np.arctan2(eigvec[0].imag,eigvec[0].real)))
@@ -51,7 +54,7 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
             print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(eigvec[4]),np.arctan2(eigvec[4].imag,eigvec[4].real)))
             print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(eigvec[5]),np.arctan2(eigvec[5].imag,eigvec[5].real)))
             print(''.ljust(56,'='))
-        if long:
+        if lat:
             print(''.ljust(56,'='))        
             print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
             print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvec[0]),np.arctan2(eigvec[0].imag,eigvec[0].real)))
@@ -67,7 +70,7 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
         print('The {1:<20s} Undamped Natural Frequency is {0:9.7f} rad/s'.format(undamp_freq,mode))             
     else:
         # If there is not an imaginary part then do not print phase in the table.
-        if lat:
+        if long:
             print(''.ljust(56,'='))
             print('{0:<15s}{1:>15s}'.format('Component','Amplitude'))
             print('{0:<20s}{1:>9.7f}'.format('Δμ',np.abs(eigvec[0])))
@@ -77,7 +80,7 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
             print('{0:<20s}{1:>9.7f}'.format('Δξz',np.abs(eigvec[4])))
             print('{0:<20s}{1:>9.7f}'.format('Δθ',np.abs(eigvec[5])))
             print(''.ljust(56,'='))
-        if long:
+        if lat:
             print(''.ljust(56,'='))        
             print('{0:<15s}{1:>15s}'.format('Component','Amplitude'))
             print('{0:<20s}{1:>9.7f}'.format('Δβ',np.abs(eigvec[0])))
@@ -89,16 +92,16 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
             print(''.ljust(56,'='))
     if damped:
         # If the system is damped, print a 99% Damping Time.
-        damp_time = -np.log(0.01)/(sig)          # 99% damping time
+        damp_time = -np.log(0.01)/(sig*dimensional)          # 99% damping time
         print('The {0:<20s} 99% Damping Time is {1:9.7f} s.'.format(mode,damp_time))
     else:
         # If the system is not damped, print a Doubling Time instead.
-        damp_time = -np.log(2)/sig             # Doubling Time
+        damp_time = -np.log(2)/(sig*dimensional)             # Doubling Time
         print('The {0:<20s} Doubling Time is {1:9.7f} s.'.format(mode,damp_time))
-    print('The {1:<20s} Damping Rate is {0:9.7f} s^(-1)'.format(sig,mode))
+    print('The {1:<20s} Damping Rate is {0:9.7f} s^(-1)'.format(damp_rate,mode))
     print()
     print()
-    return damp_ratio,damp_time,damp_nat_freq
+    return damp_ratio,damp_time,undamp_freq
 
     
 
@@ -114,8 +117,8 @@ Sw = aircraft["aircraft"]["wing_area[ft^2]"]
 b = aircraft["aircraft"]["wing_span[ft]"]
 W = aircraft["operating"]["weight[lbf]"]
 # gamma = (aircraft["operating"]["climb[deg]"]) * (np.pi/ 180)
-# rho = aircraft["operating"]["density[slugs/ft^3]"]
-rho = 0.0023769
+rho = aircraft["operating"]["density[slugs/ft^3]"]
+#rho = 0.0023769
 CLo = aircraft["reference"]["CL"]
 Ixx = aircraft["reference"]["Ixx[slugs*ft^2]"]
 Iyy = aircraft["reference"]["Iyy[slugs*ft^2]"]
@@ -161,7 +164,9 @@ g = 32.17
 c = Sw / b
 Vo = np.sqrt((2*W*np.cos(theta)/(rho*Sw*CLo)))      # Equation 10.45 Ch. 7 Overview
 CD_o = CD0 + (CD1*CLo) + ((CD2 * (CLo**2)))         # Equation 10.46 Ch. 7 Overview
+#CD_o = 0.05
 CD_a = CD1*CL_a + 2*CD2*CLo*CL_a                    # Equation 10.57 Ch. 7 Overview
+#CD_a = 0.35
 CT_V = thrust_v/ (0.5*rho*Vo*Sw)                    # Equation 10.74 Ch. 7 Overview
 Cm_o = 0.0
 z_To = 0.00
@@ -455,11 +460,6 @@ roll_eigval1 = lat_eigvals[0]*2*Vo/b
 spiral_eigval1 = lat_eigvals[1]*2*Vo/b
 dutch_eigval1 = lat_eigvals[4]*2*Vo/b
 dutch_eigval2 = lat_eigvals[5]*2*Vo/b
-print(sp_eigval1)
-print(ph_eigval1)
-print(roll_eigval1)
-print(spiral_eigval1)
-print(dutch_eigval1)
 
 
 plt.scatter([-13.2755786023,-13.2755786023],[-4.9716170082,4.9716170082],label='BG Short Period',c='darkblue')
@@ -492,6 +492,7 @@ elif (sp_damp_ratio > 0.15):
 else:
     print('The aircraft is Level 4 for Short Period.')
 
+
 if (ph_damp_ratio>0.04):
     print('The aircraft is Level 1 for Phugoid Mode.')
 elif (ph_damp_ratio>0):
@@ -501,14 +502,17 @@ elif (ph_damp_time > 55):
 else:
     print('The aircraft is Level 4 for Phugoid Mode.')
 
-if (roll_sig < 1.4):
+roll_time = 1/roll_sig
+
+if (roll_time < 1.4):
     print('The aircraft is Level 1 for Roll Mode.')
-elif (roll_sig < 3):
+elif (roll_time < 3):
     print('The aircraft is Level 2 for Roll Mode.')
-elif (roll_sig < 10):
+elif (roll_time < 10):
     print('The aircraft is Level 3 for Roll Mode.')
 else: 
     print('The aircraft is Level 4 for Roll Mode.')
+
 
 if (spiral_time > 20):
     print('The aircraft is Level 1 for Spiral Mode.')
