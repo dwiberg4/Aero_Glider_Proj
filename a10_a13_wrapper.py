@@ -35,7 +35,7 @@ def main(input_file,plot):
     ####---------------------------------------------------------------------####
     #                                                            Initialize scene
     my_scene = MX.Scene(input_file)
-    my_scene.display_wireframe()
+    # my_scene.display_wireframe()
 
 
     ####---------------------------------------------------------------------####
@@ -347,7 +347,7 @@ def main(input_file,plot):
     params["current_b_thick"] = current_b_thick
 
 
-    target_arm = bbt.balbal(params, results,True, b_mass = current_b_mass)
+    target_arm = bbt.balbal(params, results,False, b_mass = current_b_mass)
     params["target_arm"] = target_arm
 
     # If we were to max the moment are (which simultaneously reduces the weight):
@@ -375,12 +375,12 @@ def main(input_file,plot):
 
         sim_json["reference"]["CL"] = data_mat[15][1]
 
-        sim_json["reference"]["Ixx[slugs*ft^2]"] = 2.0045561
-        sim_json["reference"]["Iyy[slugs*ft^2]"] = 2.0211648
-        sim_json["reference"]["Izz[slugs*ft^2]"] = 3.9885303
-        sim_json["reference"]["Ixy[slugs*ft^2]"] = 0.0000001
-        sim_json["reference"]["Ixz[slugs*ft^2]"] = 0.0430144
-        sim_json["reference"]["Iyz[slugs*ft^2]"] = -0.0000001
+        sim_json["reference"]["Ixx[slugs*ft^2]"] = 676.36960066/144
+        sim_json["reference"]["Iyy[slugs*ft^2]"] =  248.76616024/144
+        sim_json["reference"]["Izz[slugs*ft^2]"] =  915.32776651/144
+        sim_json["reference"]["Ixy[slugs*ft^2]"] = -0.00002054/144
+        sim_json["reference"]["Ixz[slugs*ft^2]"] = 1.68559488/144
+        sim_json["reference"]["Iyz[slugs*ft^2]"] = 0.00028770/144
         sim_json["reference"]["CD0"] = C_D0
         sim_json["reference"]["CD1"] = C_D1
         sim_json["reference"]["CD2"] = C_D2
