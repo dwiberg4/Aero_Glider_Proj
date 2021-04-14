@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 
-input = 'BaselineGlider.json'
+input = 'edited_0000.json'
 
 def printEigen(eigval,eigvec,mode,lat,long,dimensional):
     """Prints an Eigenvalue Summary to the terminal with data depending on the information given to the Eigenvalue
@@ -22,20 +22,25 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
         long (Bool): if True, the longitudinal amplitude and phase table will be printed. Requires an eigvector.
         dimensional (float): A float to represent the value to dimensionalize with. 
     """
-    print('The {0:<20s} is given by {1:9.7f} ± {2:9.7f} i.'.format(mode,eigval.real,np.abs(eigval.imag)))
-    sig = -eigval.real*dimensional
+    print('The dimensionless eigenvalue is given by {0:9.7f} ± {1:9.7f} i.'.format(eigval.real,np.abs(eigval.imag)))
+    if eigvec is None:
+        0
+    else:
+        print('The dimensionless eigenvector is given by: \n {0:9.7f} \n {1:9.7f} \n {2:9.7f} \n {3:9.7f} \n {4:9.7f} \n {5:9.7f} \n'.format(eigvec[0],\
+            eigvec[1],eigvec[2],eigvec[3],eigvec[4],eigvec[5]))
+    sig = -eigval.real
     damped = (0>eigval.real)
-    damp_nat_freq = np.abs(eigval.imag)*dimensional
-    damp_rate = -eigval.real
-    damp_ratio = sig
+    damp_nat_freq = np.abs(eigval.imag)
+    damp_rate = -eigval.real*dimensional
+    damp_ratio = sig*dimensional
     undamp_freq = 0.0
     if damp_nat_freq > 0.000001:
         # If there is an imaginary part calculate and print all of these values.
         eig1 = np.complex(sig,damp_nat_freq)
         eig2 = np.complex(sig,-damp_nat_freq)
-        undamp_freq = np.sqrt(eig1*eig2)*dimensional
+        undamp_freq = (np.sqrt(eig1*eig2)*dimensional).real
         period = 2*np.pi/damp_nat_freq
-        damp_ratio = -(eig1 + eig2)/(2*np.sqrt(eig1*eig2))
+        damp_ratio = (-(eig1 + eig2)/(2*np.sqrt(eig1*eig2))).real
         if lat:
             print(''.ljust(56,'='))
             print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
@@ -56,8 +61,10 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
             print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvec[4]),np.arctan2(eigvec[4].imag,eigvec[4].real)))
             print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvec[5]),np.arctan2(eigvec[5].imag,eigvec[5].real)))
             print(''.ljust(56,'='))
-        print('The {1:<20s} Period is {0:9.7f}'.format(period,mode))   
-        print('The {1:<20s} Damped Frequency is {0:9.7f}'.format(damp_nat_freq,mode))                   
+        print('The {1:<20s} Period is {0:9.7f} s.'.format(period,mode))   
+        print('The {1:<20s} Damped Natural Frequency is {0:9.7f} rad/s'.format(damp_nat_freq,mode))    
+        print('The {1:<20s} Damping Ratio is {0:9.7f}'.format(damp_ratio,mode)) 
+        print('The {1:<20s} Undamped Natural Frequency is {0:9.7f} rad/s'.format(undamp_freq,mode))             
     else:
         # If there is not an imaginary part then do not print phase in the table.
         if lat:
@@ -83,12 +90,12 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
     if damped:
         # If the system is damped, print a 99% Damping Time.
         damp_time = -np.log(0.01)/(sig)          # 99% damping time
-        print('The {0:<20s} 99% Damping Time is {1:9.7f}'.format(mode,damp_time))
+        print('The {0:<20s} 99% Damping Time is {1:9.7f} s.'.format(mode,damp_time))
     else:
         # If the system is not damped, print a Doubling Time instead.
         damp_time = -np.log(2)/sig             # Doubling Time
-        print('The {0:<20s} Doubling Time is {1:9.7f}'.format(mode,damp_time))
-    print('The {1:<20s} Damping Rate is {0:9.7f}'.format(sig,mode))
+        print('The {0:<20s} Doubling Time is {1:9.7f} s.'.format(mode,damp_time))
+    print('The {1:<20s} Damping Rate is {0:9.7f} s^(-1)'.format(sig,mode))
     print()
     print()
     return damp_ratio,damp_time,damp_nat_freq
@@ -106,8 +113,9 @@ f.close()
 Sw = aircraft["aircraft"]["wing_area[ft^2]"]
 b = aircraft["aircraft"]["wing_span[ft]"]
 W = aircraft["operating"]["weight[lbf]"]
-gamma = (aircraft["operating"]["climb[deg]"]) * (np.pi/ 180)
-rho = aircraft["operating"]["density[slugs/ft^3]"]
+# gamma = (aircraft["operating"]["climb[deg]"]) * (np.pi/ 180)
+# rho = aircraft["operating"]["density[slugs/ft^3]"]
+rho = 0.0023769
 CLo = aircraft["reference"]["CL"]
 Ixx = aircraft["reference"]["Ixx[slugs*ft^2]"]
 Iyy = aircraft["reference"]["Iyy[slugs*ft^2]"]
@@ -409,7 +417,7 @@ Csp = -Cm_q*(CL_a + CD_o) - Cm_a*(R_rhox - CL_q)
 sigma_sp = Vo/c*Bsp/Asp
 omega_sp = Vo/c*np.abs(np.lib.scimath.sqrt(Bsp**2-4*Asp*Csp)/Asp)
 eigenval_sp = c/(2*Vo)*np.complex(-sigma_sp,omega_sp)
-printEigen(eigenval_sp,0,'Short Period Mode',False,False,2*Vo/c)
+printEigen(eigenval_sp,None,'Short Period Mode',False,False,2*Vo/c)
 
 
 print('Long Period Approximation:')
@@ -420,23 +428,23 @@ sigma_psi = -g/Vo*R_gx*Rs*(R_rhox*Cm_q - R_yy*(CD_o + CL_a))/(R_rhox*Cm_a + (CD_
 sigma_p = sigma_d + sigma_q + sigma_psi
 omega_p = np.sqrt(2*(g/Vo)**2*Rs - (sigma_d + sigma_q)**2)
 eigenval_p = c/(2*Vo)*np.complex(-sigma_p,omega_p)
-printEigen(eigenval_p,0,'Long Period Mode',False,False,2*Vo/c)
+printEigen(eigenval_p,None,'Long Period Mode',False,False,2*Vo/c)
 
 
 print('Roll Mode Approximation: ')
 sigma_r = (rho*Sw*b**2*Vo*Cl_p)/(4*Ixx)*b/(2*Vo)
-printEigen(np.complex(sigma_r,0),0,'Roll Mode',False,False,2*Vo/b)
+printEigen(np.complex(sigma_r,0),None,'Roll Mode',False,False,2*Vo/b)
 
 print('Spiral Mode Approximation: ')
 sigma_s = -(g/Vo)*(Cl_b*Cn_r - Cl_r*Cn_b)/(Cl_b*Cn_p - Cl_p*Cn_b)*b/(2*Vo)
-printEigen(np.complex(sigma_s,0),0,'Spiral Mode',False,False,2*Vo/b)
+printEigen(np.complex(sigma_s,0),None,'Spiral Mode',False,False,2*Vo/b)
 
 
 print('Dutch Roll Mode Approximation: ')
 R_Ds = (Cl_b*(R_gy*R_rhoy*R_zz - (R_rhoy - CY_r)*Cn_p) - CY_b*Cl_r*Cn_p)/(R_rhoy*R_zz*Cl_p)
 sigma_dr = Vo/b*(CY_b/R_rhoy + Cn_r/R_zz - Cl_r*Cn_p/(Cl_p*R_zz) + R_gy*(Cl_r*Cn_b - Cl_b*Cn_r)/(Cl_p*(Cn_b + CY_b*Cn_r/R_rhoy)) - R_xx*R_Ds/Cl_p)*b/(2*Vo)
 omega_dr = np.sqrt((1-CY_r/R_rhoy)*(Cn_b/R_zz) + CY_b*Cn_r/(R_rhoy*R_zz) + R_Ds - (1/4)*(CY_b/R_rhoy + Cn_r/R_zz)**2)
-printEigen(np.complex(sigma_dr,omega_dr),0,'Dutch Roll Mode', False,False,2*Vo/b)
+printEigen(np.complex(sigma_dr,omega_dr),None,'Dutch Roll Mode', False,False,2*Vo/b)
 
 
 sp_eigval1 = long_eigvals[0]*2*Vo/c
@@ -447,12 +455,23 @@ roll_eigval1 = lat_eigvals[0]*2*Vo/b
 spiral_eigval1 = lat_eigvals[1]*2*Vo/b
 dutch_eigval1 = lat_eigvals[4]*2*Vo/b
 dutch_eigval2 = lat_eigvals[5]*2*Vo/b
+print(sp_eigval1)
+print(ph_eigval1)
+print(roll_eigval1)
+print(spiral_eigval1)
+print(dutch_eigval1)
 
-plt.scatter([sp_eigval1.real,sp_eigval2.real],[sp_eigval1.imag,sp_eigval2.imag],label='Short Period Mode')
-plt.scatter([ph_eigval1.real,ph_eigval2.real],[ph_eigval1.imag,ph_eigval2.imag],label='Phugoid Mode')
-plt.scatter([roll_eigval1.real],[roll_eigval1.imag],label = 'Roll Mode')
-plt.scatter([spiral_eigval1.real],[spiral_eigval1.imag],label = 'Spiral Mode')
-plt.scatter([dutch_eigval1.real,dutch_eigval2.real],[dutch_eigval1.imag,dutch_eigval2.imag],label = 'Dutch Roll Mode')
+
+plt.scatter([-13.2755786023,-13.2755786023],[-4.9716170082,4.9716170082],label='BG Short Period',c='darkblue')
+plt.scatter([-0.07791825611944855,-0.07791825611944855],[-1.2155409399418993,1.2155409399418993],label = 'BG Phugoid',c = 'darkorange')
+plt.scatter([-73.15940944802125,-73.15940944802125],[0,0],label = 'BG Roll Mode',c = 'darkgreen')
+plt.scatter([0.49542512183772963,0.49542512183772963],[0,0],label = 'BG Spiral Mode',c = 'darkred')
+plt.scatter([-3.2384848352138427,-3.2384848352138427],[-4.264866280273775,4.264866280273775],label = 'BG Dutch Roll',c = 'darkviolet')
+plt.scatter([sp_eigval1.real,sp_eigval2.real],[sp_eigval1.imag,sp_eigval2.imag],label='Short Period Mode',c='lightblue')
+plt.scatter([ph_eigval1.real,ph_eigval2.real],[ph_eigval1.imag,ph_eigval2.imag],label='Phugoid Mode',c = 'orange')
+plt.scatter([roll_eigval1.real],[roll_eigval1.imag],label = 'Roll Mode',c = 'lightgreen')
+plt.scatter([spiral_eigval1.real],[spiral_eigval1.imag],label = 'Spiral Mode',c = 'lightcoral')
+plt.scatter([dutch_eigval1.real,dutch_eigval2.real],[dutch_eigval1.imag,dutch_eigval2.imag],label = 'Dutch Roll Mode',c = 'violet')
 plt.title('Dimensional Eigenvalues')
 plt.xlabel('Real')
 plt.ylabel('Imaginary')
@@ -468,8 +487,10 @@ if (sp_damp_ratio >0.3) & (sp_damp_ratio<2.00):
     print('The aircraft is Level 1 for Short Period.')
 elif (sp_damp_ratio > 0.2) & (sp_damp_ratio<2.00):
     print('The aircraft is Level 2 for Short Period.')
-elif (sp_damp_ratio > 0.15) & (sp_damp_ratio < 2.00):
+elif (sp_damp_ratio > 0.15):
     print('The aircraft is Level 3 for Short Period.')
+else:
+    print('The aircraft is Level 4 for Short Period.')
 
 if (ph_damp_ratio>0.04):
     print('The aircraft is Level 1 for Phugoid Mode.')
@@ -477,6 +498,8 @@ elif (ph_damp_ratio>0):
     print('The aircraft is Level 2 for Phugoid Mode.')
 elif (ph_damp_time > 55):
     print('The aircraft is Level 3 for Phugoid Mode.')
+else:
+    print('The aircraft is Level 4 for Phugoid Mode.')
 
 if (roll_sig < 1.4):
     print('The aircraft is Level 1 for Roll Mode.')
@@ -484,7 +507,8 @@ elif (roll_sig < 3):
     print('The aircraft is Level 2 for Roll Mode.')
 elif (roll_sig < 10):
     print('The aircraft is Level 3 for Roll Mode.')
-
+else: 
+    print('The aircraft is Level 4 for Roll Mode.')
 
 if (spiral_time > 20):
     print('The aircraft is Level 1 for Spiral Mode.')
@@ -492,6 +516,8 @@ elif (spiral_time > 12):
     print('The aircraft is Level 2 for Spiral Mode.')
 elif (spiral_time > 4):
     print('The aircraft is Level 3 for Spiral Mode.')
+else:
+    print('The aircraft is Level 4 for Spiral Mode.')
 
 product = dutch_roll_damp_ratio*dutch_roll_ud_freq
 if (dutch_roll_damp_ratio > 0.08) & (dutch_roll_ud_freq > 0.4) & (product > 0.15):
@@ -500,4 +526,6 @@ elif (dutch_roll_damp_ratio > 0.02) & (dutch_roll_ud_freq > 0.4) & (product > 0.
     print('The aircraft is Level 2 for Dutch Roll Mode.')
 elif (dutch_roll_damp_ratio > 0) & (dutch_roll_ud_freq > 0.4):
     print('The aircraft is Level 3 for Dutch Roll Mode.')
+else:
+    print('The aircraft is Level 4 for Dutch Roll Mode.')
 

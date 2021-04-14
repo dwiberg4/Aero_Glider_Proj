@@ -2,6 +2,7 @@ import machupX as MX
 import numpy as np
 import json
 from scipy.optimize import minimize
+import matplotlib.pyplot as plt
 
 
 
@@ -14,7 +15,7 @@ def trim_func(x,Cl,static_margin, Cn_beta, Cl_beta):
         scene = json.load(f)
     f.close()
     wing_twist = 2.5        # angle to twist wing down from mounting angle.
-    airplane['CG'] = [x[0],0.0,0.0]
+    airplane['CG'][0] = x[0]
     airplane['wings']['main_wing']['twist'] = [[0.0, x[1],
                                                 1.0, x[1]-wing_twist]]
     airplane['wings']['outside_wings']['twist'] =  [[0.0, 0,
@@ -58,12 +59,125 @@ def trim(static_margin, Cn_beta, Cl_beta):
     print(res)
 
 if __name__ == '__main__':
-    trim(0.35, 0.1, -0.05)
+    trim(0.35, 0.15, -0.03)
     import req_check
     req_check.check_requirements('glider_2.0.json')
-    scene = MX.Scene('scene.json')
-    scene.export_dxf()
-    # To use, define everything in the JSON file, then define your trim(static_margin, Cn_beta, Cl_beta)
-    # Pressing run will update the CGx, H and V Stab location and dihedral inside of the JSON file.
+    import a10_a13_wrapper
+    a10_a13_wrapper
+    import dyna_matheson
+    dyna_matheson
+
+
+    # import dynamic
+    # import a10_a13_wrapper
+
+    # statmar = np.linspace(0.1,0.5,20)
+    # n_beta = np.linspace(-0.25,0.25,20)
+    # l_beta = np.linspace(-0.25,0.25,20)
+    # short_period_data = []
+    # phugoid_data = []
+    # roll_data = []
+    # spiral_data = []
+    # dutch_roll_data = []
+    # for i in statmar:
+    #     trim(i,0.1,-0.05)
+    #     a10_a13_wrapper
+    #     lat,long = dynamic.dyna()
+    #     short_period_data.append(np.abs(long[0]))
+    #     phugoid_data.append(np.abs(long[2]))
+    #     roll_data.append(np.abs(lat[0]))
+    #     spiral_data.append(np.abs(lat[1]))
+    #     dutch_roll_data.append(np.abs(lat[4]))
+    # plt.scatter(statmar,short_period_data,label = 'Short Period Magnitude')
+    # plt.xlabel('Static Margin')
+    # plt.ylabel('Magnitude of Eigenvalue')
+    # plt.title('Static Margin versus Eigenvalues')
+    # plt.legend()
+    # plt.savefig('StaticMargin_SP.png',dpi=800)
+    # plt.show()
+    # plt.scatter(statmar,phugoid_data,label = 'Phugoid Period Magnitude')
+    # plt.xlabel('Static Margin')
+    # plt.ylabel('Magnitude of Eigenvalue')
+    # plt.title('Static Margin versus Eigenvalues')
+    # plt.legend()
+    # plt.savefig('StaticMargin_Ph.png',dpi=800)
+    # plt.show()
+    # plt.scatter(statmar,roll_data,label = 'Roll Mode Magnitude')
+    # plt.xlabel('Static Margin')
+    # plt.ylabel('Magnitude of Eigenvalue')
+    # plt.title('Static Margin versus Eigenvalues')
+    # plt.legend()
+    # plt.savefig('StaticMargin_Roll.png',dpi=800)
+    # plt.show()
+    # plt.scatter(statmar,spiral_data,label='Spiral Mode Magnitude')
+    # plt.xlabel('Static Margin')
+    # plt.ylabel('Magnitude of Eigenvalue')
+    # plt.title('Static Margin versus Eigenvalues')
+    # plt.legend()
+    # plt.savefig('StaticMargin_Spiral.png',dpi=800)
+    # plt.show()
+    # plt.scatter(statmar,dutch_roll_data,label = 'Dutch Roll Magnitude')
+    # plt.xlabel('Static Margin')
+    # plt.ylabel('Magnitude of Eigenvalue')
+    # plt.title('Static Margin versus Eigenvalues')
+    # plt.legend()
+    # plt.savefig('StaticMargin_Dutch.png',dpi=800)
+    # plt.show()
+
+
+    # short_period_data = []
+    # phugoid_data = []
+    # roll_data = []
+    # spiral_data = []
+    # dutch_roll_data = []
+    # for i in n_beta:
+    #     trim(0.35,i,-0.05)
+    #     a10_a13_wrapper
+    #     lat,long = dynamic.dyna()
+    #     short_period_data.append(np.abs(long[0]))
+    #     phugoid_data.append(np.abs(long[2]))
+    #     roll_data.append(np.abs(lat[0]))
+    #     spiral_data.append(np.abs(lat[1]))
+    #     dutch_roll_data.append(np.abs(lat[4]))
+    # plt.scatter(n_beta,short_period_data,label = 'Short Period Magnitude')
+    # plt.scatter(n_beta,phugoid_data,label = 'Phugoid Period Magnitude')
+    # plt.scatter(n_beta,roll_data,label = 'Roll Mode Magnitude')
+    # plt.scatter(n_beta,spiral_data,label='Spiral Mode Magnitude')
+    # plt.scatter(n_beta,dutch_roll_data,label = 'Dutch Roll Magnitude')
+    # plt.xlabel('Cn_b')
+    # plt.ylabel('Magnitude of Eigenvalue')
+    # plt.title('Cn_b versus Eigenvalues')
+    # plt.legend()
+    # plt.savefig('Cnb.png',dpi=800)
+    # plt.show()
+
+
+    # short_period_data = []
+    # phugoid_data = []
+    # roll_data = []
+    # spiral_data = []
+    # dutch_roll_data = []
+    # for i in l_beta:
+    #     trim(0.35,0.1,i)
+    #     a10_a13_wrapper
+    #     lat,long = dynamic.dyna()
+    #     short_period_data.append(np.abs(long[0]))
+    #     phugoid_data.append(np.abs(long[2]))
+    #     roll_data.append(np.abs(lat[0]))
+    #     spiral_data.append(np.abs(lat[1]))
+    #     dutch_roll_data.append(np.abs(lat[4]))
+    # plt.scatter(n_beta,short_period_data,label = 'Short Period Magnitude')
+    # plt.scatter(n_beta,phugoid_data,label = 'Phugoid Period Magnitude')
+    # plt.scatter(n_beta,roll_data,label = 'Roll Mode Magnitude')
+    # plt.scatter(n_beta,spiral_data,label='Spiral Mode Magnitude')
+    # plt.scatter(n_beta,dutch_roll_data,label = 'Dutch Roll Magnitude')
+    # plt.xlabel('Cl_b')
+    # plt.ylabel('Magnitude of Eigenvalue')
+    # plt.title('Cl_b versus Eigenvalues')
+    # plt.legend()
+    # plt.savefig('Clb.png',dpi=800)
+    # plt.show()
+    # # To use, define everything in the JSON file, then define your trim(static_margin, Cn_beta, Cl_beta)
+    # # Pressing run will update the CGx, H and V Stab location and dihedral inside of the JSON file.
 
 

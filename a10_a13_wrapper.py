@@ -279,7 +279,7 @@ def main(input_file,plot):
         "beta" : 0.0
     }
     my_scene.set_aircraft_state(state = state, aircraft = "glider_2.0")
-    target_CL = my_scene.target_CL(CL = 0.5, filename="target_CL.txt", set_state = True)
+    target_CL = my_scene.target_CL(CL = 0.440613, filename="target_CL.txt", set_state = True)
     FM_results = my_scene.solve_forces(filename="Output_FM",report_by_segment=True, dimensional=False, non_dimensional=True,)
     derivs = my_scene.derivatives(filename="Output_Derivs",report_by_segment=True)
     results = {}
