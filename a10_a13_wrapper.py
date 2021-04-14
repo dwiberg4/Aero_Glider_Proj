@@ -235,8 +235,8 @@ def main(input_file,plot):
         fig.savefig("x_vs_y_ac.png")
 
 
-    print(data_mat)
-    print(func_mat)
+    # print(data_mat)
+    # print(func_mat)
     #print(aero_mat)
 
 
@@ -377,6 +377,8 @@ def main(input_file,plot):
         sim_json["aircraft"]["wing_area[ft^2]"] = params["Sw"]
         sim_json["aircraft"]["wing_span[ft]"] = params["b"]
         sim_json["operating"]["weight[lbf]"] = params["W"]
+        sim_json["operating"]["climb[deg]"] = 0.0
+        sim_json["operating"]["density[slugs/ft^3]"] = 0.0023769
         
         sim_json["reference"]["CL"] = data_mat[15][1]
 

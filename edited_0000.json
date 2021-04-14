@@ -5,7 +5,9 @@
         "wing_span[ft]": 15.5
     },
     "operating": {
-        "weight[lbf]": 1.5
+        "weight[lbf]": 1.5,
+        "climb[deg]": 0.0,
+        "density[slugs/ft^3]": 0.0023769
     },
     "reference": {
         "CL": 0.5408291357832987,
