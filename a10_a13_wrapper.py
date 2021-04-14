@@ -382,9 +382,9 @@ def main(input_file,plot):
         
         sim_json["reference"]["CL"] = data_mat[15][1]
 
-        sim_json["reference"]["Ixx[slugs*ft^2]"] = 676.36960066/144
-        sim_json["reference"]["Iyy[slugs*ft^2]"] =  248.76616024/144
-        sim_json["reference"]["Izz[slugs*ft^2]"] =  915.32776651/144
+        sim_json["reference"]["Ixx[slugs*ft^2]"] = 676.95274356/144
+        sim_json["reference"]["Iyy[slugs*ft^2]"] = 248.76398000/144
+        sim_json["reference"]["Izz[slugs*ft^2]"] = 915.32558627/144
         sim_json["reference"]["Ixy[slugs*ft^2]"] = -0.00002054/144
         sim_json["reference"]["Ixz[slugs*ft^2]"] = 1.68559488/144
         sim_json["reference"]["Iyz[slugs*ft^2]"] = 0.00028770/144
