@@ -1,0 +1,222 @@
+{
+    "CG": [
+        -0.01916232,
+        -0.00002120,
+        -0.62283663
+    ],
+    "weight": 1.49989510,
+    "reference": {
+        "area": 7.75
+    },
+    "airfoils": {
+        "NACA_2412": {
+            "type": "linear",
+            "aL0": -0.0455,
+            "CLa": 5.736,
+            "CmL0": -0.0388,
+            "Cma": -0.08,
+            "CD0": 0.0064,
+            "CD1": -0.0021,
+            "CD2": 0.0062,
+            "CL_max": 1.4,
+            "geometry": {
+                "NACA": "2412"
+            }
+        },
+        "NACA_0012": {
+            "type": "linear",
+            "aL0": 0.0,
+            "CLa": 6.118,
+            "CmL0": 0.0,
+            "Cma": 0.0,
+            "CD0": 0.0058,
+            "CD1": 0.0,
+            "CD2": 0.0059,
+            "CL_max": 1.2,
+            "geometry": {
+                "NACA": "0012"
+            }
+        }
+    },
+    "wings": {
+        "main_wing": {
+            "ID": 1,
+            "side": "both",
+            "is_main": true,
+            "connect_to": {
+                "ID": 0,
+                "dx": 0,
+                "dy": 0,
+                "dz": 0
+            },
+            "semispan": 7.25,
+            "sweep": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dihedral": 4.480492173162011,
+            "chord": [
+                [
+                    0.0,
+                    0.5
+                ],
+                [
+                    1.0,
+                    0.5
+                ]
+            ],
+            "twist": [
+                [
+                    0.0,
+                    2.681086685561987,
+                    1.0,
+                    0.18108668556198682
+                ]
+            ],
+            "airfoil": "NACA_2412",
+            "grid": {
+                "N": 40,
+                "flap_edge_cluster": true
+            }
+        },
+        "outside_wings": {
+            "ID": 2,
+            "side": "both",
+            "is_main": true,
+            "connect_to": {
+                "ID": 1,
+                "dx": 0,
+                "dy": 0,
+                "dz": 0,
+                "y_offset": 0.0
+            },
+            "semispan": 0.5,
+            "sweep": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dihedral": 90,
+            "chord": [
+                [
+                    0.0,
+                    0.5
+                ],
+                [
+                    1.0,
+                    0.5
+                ]
+            ],
+            "twist": [
+                [
+                    0.0,
+                    0,
+                    1.0,
+                    0
+                ]
+            ],
+            "airfoil": "NACA_2412",
+            "grid": {
+                "N": 40,
+                "flap_edge_cluster": true
+            }
+        },
+        "H_Stab": {
+            "ID": 3,
+            "side": "both",
+            "is_main": false,
+            "connect_to": {
+                "ID": 0,
+                "dx": -2.249051132626017,
+                "dy": 0,
+                "dz": 0,
+                "y_offset": 0.0
+            },
+            "semispan": 1.0,
+            "sweep": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dihedral": 0.0,
+            "chord": [
+                [
+                    0.0,
+                    0.5
+                ],
+                [
+                    1.0,
+                    0.35
+                ]
+            ],
+            "twist": [
+                [
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.0
+                ]
+            ],
+            "airfoil": "NACA_0012",
+            "grid": {
+                "N": 40,
+                "flap_edge_cluster": true
+            }
+        },
+        "V_Stab": {
+            "ID": 4,
+            "side": "left",
+            "is_main": false,
+            "connect_to": {
+                "ID": 0,
+                "dx": -2.9917817939960374,
+                "dy": 0,
+                "dz": 0,
+                "y_offset": 0.0
+            },
+            "semispan": 0.5,
+            "sweep": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0
+                ]
+            ],
+            "dihedral": 90.0,
+            "chord": [
+                [
+                    0.0,
+                    0.5
+                ],
+                [
+                    1.0,
+                    0.35
+                ]
+            ],
+            "airfoil": "NACA_0012",
+            "grid": {
+                "N": 40,
+                "flap_edge_cluster": true
+            }
+        }
+    }
+}
