@@ -110,7 +110,7 @@ def main(input_file,plot):
     #                                         Create Data Matrix, cases, and fill
     # Columns:
     # 0: aoa,  1: CL,  2: CD,  3: Cm,  4: CL_a,  5: Cm_a,  6: SM,  7: Cl_b,  8: Cn_b
-    aoa = np.linspace(-5,14,29)
+    aoa = np.linspace(-5,5,29)
     data_mat = np.zeros((aoa.size,9))
     #            Then Create Functions Matrix, use data, call functions, and fill
     # Columns:
@@ -234,7 +234,8 @@ def main(input_file,plot):
         plt.show()
         fig.savefig("x_vs_y_ac.png")
 
-
+    print(data_mat[:,1])
+    print(data_mat[:,2])
     # print(data_mat)
     # print(func_mat)
     #print(aero_mat)
@@ -251,15 +252,15 @@ def main(input_file,plot):
     C_D1 = D_coeffs[1]
     C_D0 = D_coeffs[2]
 
-    li = np.linspace(-1,2.75,30)
+    li = np.linspace(-0.25,1.5,30)
     dr = np.zeros((li.size))
     for i in range(li.size):
         dr[i] = C_D0 + (C_D1 * li[i]) + (C_D2 * (li[i]**2))
     
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
-    ax.plot(li,dr,label="polyfit")
-    ax.plot(data_mat[:,1],data_mat[:,2],label="DATA")
+    ax.plot(li,dr,label="polyfit",color = "orange")
+    ax.scatter(data_mat[:,1],data_mat[:,2],label="DATA")
     ax.legend()
     # if 'xlabel' in kwargs:
     #     ax.set_xlabel(kwargs['xlabel'])
