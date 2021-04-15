@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 
-input = 'book_example.json'
+input = 'edited_0000.json'
 
 def printEigen(eigval,eigvec,mode,lat,long,dimensional):
     """Prints an Eigenvalue Summary to the terminal with data depending on the information given to the Eigenvalue
@@ -35,7 +35,7 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
     damp_rate = -eigval.real*dimensional
     damp_ratio = sig*dimensional
     undamp_freq = 0.0
-    if damp_nat_freq > 0.000001:
+    if damp_nat_freq > 0.0001:
         # If there is an imaginary part calculate and print all of these values.
         eig1 = np.complex(-eigval.real,eigval.imag)*dimensional
         eig2 = np.complex(-eigval.real,-eigval.imag)*dimensional
