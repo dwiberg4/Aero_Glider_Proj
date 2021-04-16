@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 
-input = 'edited_0000.json'
+input = 'BaselineGlider.json'
 
 def printEigen(eigval,eigvec,mode,lat,long,dimensional):
     """Prints an Eigenvalue Summary to the terminal with data depending on the information given to the Eigenvalue
@@ -47,22 +47,22 @@ def printEigen(eigval,eigvec,mode,lat,long,dimensional):
         if long:
             print(''.ljust(56,'='))
             print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(eigvec[0]),np.arctan2(eigvec[0].imag,eigvec[0].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δα',np.abs(eigvec[1]),np.arctan2(eigvec[1].imag,eigvec[1].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δqbar',np.abs(eigvec[2]),np.arctan2(eigvec[2].imag,eigvec[2].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(eigvec[3]),np.arctan2(eigvec[3].imag,eigvec[3].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(eigvec[4]),np.arctan2(eigvec[4].imag,eigvec[4].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(eigvec[5]),np.arctan2(eigvec[5].imag,eigvec[5].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δμ',np.abs(eigvec[0]),-np.degrees(np.arctan2(eigvec[0].imag,eigvec[0].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δα',np.abs(eigvec[1]),-np.degrees(np.arctan2(eigvec[1].imag,eigvec[1].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δqbar',np.abs(eigvec[2]),-np.degrees(np.arctan2(eigvec[2].imag,eigvec[2].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξx',np.abs(eigvec[3]),-np.degrees(np.arctan2(eigvec[3].imag,eigvec[3].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξz',np.abs(eigvec[4]),-np.degrees(np.arctan2(eigvec[4].imag,eigvec[4].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δθ',np.abs(eigvec[5]),-np.degrees(np.arctan2(eigvec[5].imag,eigvec[5].real))))
             print(''.ljust(56,'='))
         if lat:
             print(''.ljust(56,'='))        
             print('{0:<15s}{1:>15s}{2:>10s}'.format('Component','Amplitude','Phase'))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvec[0]),np.arctan2(eigvec[0].imag,eigvec[0].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvec[1]),np.arctan2(eigvec[1].imag,eigvec[1].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvec[2]),np.arctan2(eigvec[2].imag,eigvec[2].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvec[3]),np.arctan2(eigvec[3].imag,eigvec[3].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvec[4]),np.arctan2(eigvec[4].imag,eigvec[4].real)))
-            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvec[5]),np.arctan2(eigvec[5].imag,eigvec[5].real)))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δβ',np.abs(eigvec[0]),-np.degrees(np.arctan2(eigvec[0].imag,eigvec[0].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δpbar',np.abs(eigvec[1]),-np.degrees(np.arctan2(eigvec[1].imag,eigvec[1].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δrbar',np.abs(eigvec[2]),-np.degrees(np.arctan2(eigvec[2].imag,eigvec[2].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δξy',np.abs(eigvec[3]),-np.degrees(np.arctan2(eigvec[3].imag,eigvec[3].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δφ',np.abs(eigvec[4]),-np.degrees(np.arctan2(eigvec[4].imag,eigvec[4].real))))
+            print('{0:<20s}{1:>9.7f}{2:>10.2f}°'.format('Δψ',np.abs(eigvec[5]),-np.degrees(np.arctan2(eigvec[5].imag,eigvec[5].real))))
             print(''.ljust(56,'='))
         print('The {1:<20s} Period is {0:9.7f} s.'.format(period,mode))   
         print('The {1:<20s} Damped Natural Frequency is {0:9.7f} rad/s'.format(damp_nat_freq,mode))    
@@ -281,6 +281,7 @@ long_eigvecs = long_eigvecs[:,idx]
 # print()
 
 # All of that commented code is contained in these two function calls.
+print(long_eigvals)
 sp_damp_ratio,unneed,sp_undamp_freq = printEigen(long_eigvals[0],long_eigvecs[:,0],'Short Period Mode',False,True,2*Vo/c)
 ph_damp_ratio,ph_damp_time,unneed1 = printEigen(long_eigvals[2],long_eigvecs[:,2],'Long Period Mode',False,True,2*Vo/c)
 
@@ -406,6 +407,7 @@ lat_eigvecs = lat_eigvecs[:,idx]
 # print()
 
 # All of the above code is replaced by these values.
+print(lat_eigvals)
 roll_sig,unneed,unneed1 = printEigen(lat_eigvals[0],lat_eigvecs[:,0],'Roll Mode',True,False,2*Vo/b)
 unneed,spiral_time,unneed1 = printEigen(lat_eigvals[1],lat_eigvecs[:,1],'Spiral Mode',True,False,2*Vo/b)
 dutch_roll_damp_ratio,unneed,dutch_roll_ud_freq = printEigen(lat_eigvals[4],lat_eigvecs[:,4],'Dutch Roll Mode',True,False,2*Vo/b)
@@ -449,6 +451,9 @@ print('Dutch Roll Mode Approximation: ')
 R_Ds = (Cl_b*(R_gy*R_rhoy*R_zz - (R_rhoy - CY_r)*Cn_p) - CY_b*Cl_r*Cn_p)/(R_rhoy*R_zz*Cl_p)
 sigma_dr = Vo/b*(CY_b/R_rhoy + Cn_r/R_zz - Cl_r*Cn_p/(Cl_p*R_zz) + R_gy*(Cl_r*Cn_b - Cl_b*Cn_r)/(Cl_p*(Cn_b + CY_b*Cn_r/R_rhoy)) - R_xx*R_Ds/Cl_p)*b/(2*Vo)
 omega_dr = np.sqrt((1-CY_r/R_rhoy)*(Cn_b/R_zz) + CY_b*Cn_r/(R_rhoy*R_zz) + R_Ds - (1/4)*(CY_b/R_rhoy + Cn_r/R_zz)**2)
+print(R_Ds)
+print(sigma_dr)
+print(omega_dr)
 printEigen(np.complex(sigma_dr,omega_dr),None,'Dutch Roll Mode', False,False,2*Vo/b)
 
 
@@ -462,16 +467,16 @@ dutch_eigval1 = lat_eigvals[4]*2*Vo/b
 dutch_eigval2 = lat_eigvals[5]*2*Vo/b
 
 
-plt.scatter([-13.2755786023,-13.2755786023],[-4.9716170082,4.9716170082],label='BG Short Period',c='darkblue')
-plt.scatter([-0.07791825611944855,-0.07791825611944855],[-1.2155409399418993,1.2155409399418993],label = 'BG Phugoid',c = 'darkorange')
-plt.scatter([-73.15940944802125,-73.15940944802125],[0,0],label = 'BG Roll Mode',c = 'darkgreen')
-plt.scatter([0.49542512183772963,0.49542512183772963],[0,0],label = 'BG Spiral Mode',c = 'darkred')
-plt.scatter([-3.2384848352138427,-3.2384848352138427],[-4.264866280273775,4.264866280273775],label = 'BG Dutch Roll',c = 'darkviolet')
-plt.scatter([sp_eigval1.real,sp_eigval2.real],[sp_eigval1.imag,sp_eigval2.imag],label='Short Period Mode',c='lightblue')
-plt.scatter([ph_eigval1.real,ph_eigval2.real],[ph_eigval1.imag,ph_eigval2.imag],label='Phugoid Mode',c = 'orange')
-plt.scatter([roll_eigval1.real],[roll_eigval1.imag],label = 'Roll Mode',c = 'lightgreen')
-plt.scatter([spiral_eigval1.real],[spiral_eigval1.imag],label = 'Spiral Mode',c = 'lightcoral')
-plt.scatter([dutch_eigval1.real,dutch_eigval2.real],[dutch_eigval1.imag,dutch_eigval2.imag],label = 'Dutch Roll Mode',c = 'violet')
+plt.scatter([-13.2755786023,-13.2755786023],[-4.9716170082,4.9716170082],label='BG Short Period',c='lightblue')
+plt.scatter([-0.07791825611944855,-0.07791825611944855],[-1.2155409399418993,1.2155409399418993],label = 'BG Phugoid',c = 'orange')
+plt.scatter([-73.15940944802125,-73.15940944802125],[0,0],label = 'BG Roll Mode',c = 'lightgreen')
+plt.scatter([0.49542512183772963,0.49542512183772963],[0,0],label = 'BG Spiral Mode',c = 'lightcoral')
+plt.scatter([-3.2384848352138427,-3.2384848352138427],[-4.264866280273775,4.264866280273775],label = 'BG Dutch Roll',c = 'violet')
+plt.scatter([sp_eigval1.real,sp_eigval2.real],[sp_eigval1.imag,sp_eigval2.imag],label='Short Period Mode',c='darkblue')
+plt.scatter([ph_eigval1.real,ph_eigval2.real],[ph_eigval1.imag,ph_eigval2.imag],label='Phugoid Mode',c = 'darkorange')
+plt.scatter([roll_eigval1.real],[roll_eigval1.imag],label = 'Roll Mode',c = 'darkgreen')
+plt.scatter([spiral_eigval1.real],[spiral_eigval1.imag],label = 'Spiral Mode',c = 'darkred')
+plt.scatter([dutch_eigval1.real,dutch_eigval2.real],[dutch_eigval1.imag,dutch_eigval2.imag],label = 'Dutch Roll Mode',c = 'darkviolet')
 plt.title('Dimensional Eigenvalues')
 plt.xlabel('Real')
 plt.ylabel('Imaginary')
@@ -483,11 +488,11 @@ plt.show()
 CW = W/(0.5*rho*Vo**2*Sw)
 CAP = sp_undamp_freq.real**2/(CL_a/CW)
 print('The CAP of this airplane is {0:10.7f} s^(-2)'.format(CAP))
-if (sp_damp_ratio >0.3) & (sp_damp_ratio<2.00):
+if (sp_damp_ratio >0.3) & (sp_damp_ratio<2.00) & (CAP > 0.038) & (CAP < 3.6):
     print('The aircraft is Level 1 for Short Period.')
-elif (sp_damp_ratio > 0.2) & (sp_damp_ratio<2.00):
+elif (sp_damp_ratio > 0.2) & (sp_damp_ratio<2.00) &  (CAP > 0.085) & (CAP < 10):
     print('The aircraft is Level 2 for Short Period.')
-elif (sp_damp_ratio > 0.15):
+elif (sp_damp_ratio > 0.15) & (CAP>10):
     print('The aircraft is Level 3 for Short Period.')
 else:
     print('The aircraft is Level 4 for Short Period.')
