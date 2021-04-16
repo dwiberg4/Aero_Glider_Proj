@@ -13,8 +13,8 @@ import mode_approx as mapprox
 
 #### ------------------------------------------------------ ####
 #### --------------------Unpack the JSON------------------- ####
-# input_file = 'BaselineGlider.json'
-input_file = 'edited_0000.json'
+input_file = 'BaselineGlider.json'
+# input_file = 'edited_0000.json'
 # input_file = 'book_example.json'
 if True:
     with open(input_file, "r") as f:
@@ -197,7 +197,7 @@ if True:
 #### ------------------------------------------------------ ####
 #### -------------------Eigenprob Calcs-------------------- ####
 # Longitudinal Analysis
-eigvals, eigvecs, vals, dim_eigs = myeig.eig_solve(Vo,b,c,A,B, char = True, file = True, title = "Longitudinal")
+Long_eigs, Long_vecs, Long_vals, Long_dim_eigs = myeig.eig_solve(Vo,b,c,A,B, char = True, file = True, title = "Longitudinal")
 
 # #_________0______1_______2_____3_______4____5_____6_____7_______8______9_____10__
 # vals = [w_n_d, sigmas, taus, halves, nines,dubs, w_n, zetas, periods, amps, phas]
@@ -239,7 +239,7 @@ eigvals, eigvecs, vals, dim_eigs = myeig.eig_solve(Vo,b,c,A,B, char = True, file
 
 
 # Lateral Analysis       
-eigvals, eigvecs, vals, dim_eigs = myeig.eig_solve(Vo,b,c,D,E, char = True, file = True, title = "Lateral")
+Lat_eigs, Lat_vecs, Lat_vals, Lat_dim_eigs = myeig.eig_solve(Vo,b,c,D,E, char = True, file = True, title = "Lateral")
 
 
 #### ------------------------------------------------------ ####
@@ -262,4 +262,116 @@ sr_eig,sigma_sr = mapprox.srapprox(g,Vo,b,Cl_b,Cn_r,Cl_r,Cn_b,Cn_p,Cl_p,True)
 dr_eig1,dr_eig2,sigma_dr,w_d_dr = mapprox.drapprox(Vo,b,CY_b,Cn_r,Cl_r,Cn_p,Cn_b,Cl_b,Cl_p,CY_r,Rgy,Rrhoy,Rzz,Rxx,True)
 
 
+
+#### ------------------------------------------------------ ####
+#### ------------------Handling Qualities------------------ ####
+#### --------------------For Category B-------------------- ####
+if True:
+    # Manually input the indices corresponding to each MODE
+    i_sp = (2,0)
+    i_ph = (4,1)
+    i_dr = (3,0)
+    i_rl = 2
+    i_sr = 5
+    i_lp = (7,7)    #Not applicable for this case
+
+    # SHORT PERIOD
+    CW = W / (0.5*rho*(Vo**2)*Sw)
+    acc_sens = CL_a / CW
+    #print(acc_sens)
+    w_n_SP = float(Long_vals[6][i_sp[1]])
+    #print(w_n_SP)
+
+    CAP = (w_n_SP**2) / acc_sens
+    #print("\n\nThe CAP value for the Short Period is: \n\t\t\t",CAP)
+
+    zeta_SP = float(Long_vals[7][i_sp[1]])
+    #print("The zeta_SP value is: \t\t\t",zeta_SP)
+
+    if ((CAP <= 0.038) or (zeta_SP <= 0.15)):
+        hq_SP = 4
+    if ((CAP > 0.038) and (zeta_SP > 0.15)):
+        hq_SP = 3
+    if ((0.038 < CAP < 10) and (0.2 < zeta_SP < 2.0)):
+        hq_SP = 2
+    if (0.085 < CAP < 3.6) and (0.3 < zeta_SP < 2.0):
+        hq_SP = 1
+
+    # PHUGOID
+    zeta_PH = float(Long_vals[7][i_ph[1]])
+    dubs_PH = float(Long_vals[5][i_ph[0]])
+
+    if (zeta_PH > 0.04):
+        hq_PH = 1
+    elif (0 < zeta_PH <= 0.04):
+        hq_PH = 2
+    else:
+        if (dubs_PH > 55):
+            hq_PH = 3
+        else:
+            hq_PH = 4
+
+    # DUTCH ROLL
+    w_n_DR = float(Lat_vals[6][i_dr[1]])
+    zeta_DR = float(Lat_vals[7][i_dr[1]])
+
+    prod = w_n_DR * zeta_DR
+    if (zeta_DR > 0.08 and prod > 0.15 and w_n_DR > 0.4):
+        hq_DR = 1
+    elif ((0.02 < zeta_DR <= 0.08) and (0.05 < zeta_DR <= 0.15) and (w_n_DR > 0.4) ):
+        hq_DR = 2
+    elif ((0.0 < zeta_DR <= 0.02) and (0.05 < zeta_DR <= 0.15) and (w_n_DR > 0.4) ):
+        hq_DR = 3
+    else:
+        hq_DR = 4
+
+    # ROLL
+    tau_RL = float(Lat_vals[2][i_rl])
+
+    if tau_RL < 1.4:
+        hq_RL = 1
+    elif 1.4 <= tau_RL < 3:
+        hq_RL = 2
+    elif 3 <= tau_RL < 10:
+        hq_RL = 3
+    else:
+        hq_RL = 4
+
+    # SPIRAL
+    dubs_SR = float(Lat_vals[5][i_sr])
+
+    if ((dubs_SR > 20) or (dubs_SR < 0)):
+        hq_SR = 1
+    elif 12 < dubs_SR <= 20:
+        hq_SR = 2
+    elif 4 < dubs_SR <= 12:
+        hq_SR = 3
+    else:
+        hq_SR = 4
+
+    # LATERAL PHUGOID
+    if i_lp[0] < 6:
+        w_n_LP = float(Lat_vals[6][i_lp[1]])
+        zeta_LP = float(Lat_vals[7][i_lp[1]])
+
+        sigma = w_n_LP * zeta_LP
+        if (sigma > 0.5):
+            hq_LP = 1
+        elif (0.3 < zeta_LP <= 0.5):
+            hq_LP = 2
+        elif (0.15 < zeta_LP <= 0.3):
+            hq_LP = 3
+        else:
+            hq_LP = 4
+    else:
+        hq_LP = "NA"
+
+
+    print("\nHANDLING QUALITY SCORES:")
+    print("Short Period:\t\t",hq_SP)
+    print("Phugoid:\t\t",hq_PH)
+    print("Roll:\t\t\t",hq_RL)
+    print("Spiral:\t\t\t",hq_SR)
+    print("Dutch Roll:\t\t",hq_DR)
+    print("Lateral Phugoid:\t",hq_LP)
 
