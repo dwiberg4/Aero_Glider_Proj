@@ -35,7 +35,7 @@ def main(input_file,plot):
     ####---------------------------------------------------------------------####
     #                                                            Initialize scene
     my_scene = MX.Scene(input_file)
-    # my_scene.display_wireframe()
+    my_scene.display_wireframe()
 
 
     ####---------------------------------------------------------------------####
