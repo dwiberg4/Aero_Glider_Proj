@@ -41,6 +41,7 @@ def eig_solve(Vo,b,c,*args, **kwargs):
     
     if "char" in kwargs and kwargs["char"]:
         if "title" in kwargs and kwargs["title"] == "Longitudinal":
+            # for Baseline: which = [(2,3),(4,5)]
             which = [(2,3),(4,5)]
         elif "title" in kwargs and kwargs["title"] == "Lateral":
             which = [(3,4)]

@@ -13,8 +13,8 @@ import mode_approx as mapprox
 
 #### ------------------------------------------------------ ####
 #### --------------------Unpack the JSON------------------- ####
-input_file = 'BaselineGlider.json'
-# input_file = 'edited_0000.json'
+# input_file = 'BaselineGlider.json'
+input_file = 'edited_0000.json'
 # input_file = 'book_example.json'
 if True:
     with open(input_file, "r") as f:
@@ -271,8 +271,8 @@ if True:
     i_sp = (2,0)
     i_ph = (4,1)
     i_dr = (3,0)
-    i_rl = 2
-    i_sr = 5
+    i_rl = 2        # 2 for BaselineGlider  5 for edited
+    i_sr = 5        # 5 for BaselineGlider  2 for edited
     i_lp = (7,7)    #Not applicable for this case
 
     # SHORT PERIOD
