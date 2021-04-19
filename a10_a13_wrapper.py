@@ -390,7 +390,7 @@ def main(input_file,plot):
 
     l_wt = 1.1 * ((params["wing_avg_c"]*-0.75) - params["x_hstab"])
     first = (4 * params["Sw_H"] * l_wt) / (np.pi * (params["b"]**2) * params["wing_avg_c"])
-    CL_ahat = first * params["CLa_2412"] * params["CLa_0012"]
+    CL_ahat = first * (2.55843765445805*2 + 0.0000104413947951593*2) * (0.209494556787748*2)
     Cm_ahat = CL_ahat * params["x_hstab"]
 
     with open("0000.json", "r") as f:
