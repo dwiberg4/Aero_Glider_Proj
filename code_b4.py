@@ -280,10 +280,10 @@ if True:
     acc_sens = CL_a / CW
     #print(acc_sens)
     w_n_SP = float(Long_vals[6][i_sp[1]])
-    #print(w_n_SP)
+    print(w_n_SP)
 
     CAP = (w_n_SP**2) / acc_sens
-    #print("\n\nThe CAP value for the Short Period is: \n\t\t\t",CAP)
+    print("\n\nThe CAP value for the Short Period is: \n\t\t\t",CAP)
 
     zeta_SP = float(Long_vals[7][i_sp[1]])
     #print("The zeta_SP value is: \t\t\t",zeta_SP)
