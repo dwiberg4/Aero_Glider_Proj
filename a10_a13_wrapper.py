@@ -302,7 +302,7 @@ def main(input_file,plot):
     }
     my_scene.set_aircraft_state(state = state, aircraft = "glider_2.0")
     # 0.440613
-    target_CL = my_scene.target_CL(CL = 0.7, filename="target_CL.txt", set_state = True)
+    target_CL = my_scene.target_CL(CL = 0.55, filename="target_CL.txt", set_state = True)
     FM_results = my_scene.solve_forces(filename="Output_FM",report_by_segment=True, dimensional=False, non_dimensional=True,)
     derivs = my_scene.derivatives(filename="Output_Derivs",report_by_segment=True)
     results = {}
@@ -405,11 +405,11 @@ def main(input_file,plot):
         
         sim_json["reference"]["CL"] = results["CL"] # data_mat[15][1]
 
-        sim_json["reference"]["Ixx[slugs*ft^2]"] = 677.0577985/144
-        sim_json["reference"]["Iyy[slugs*ft^2]"] = 240.3362876/144
-        sim_json["reference"]["Izz[slugs*ft^2]"] = 916.16379784/144
+        sim_json["reference"]["Ixx[slugs*ft^2]"] = 676.9938/144
+        sim_json["reference"]["Iyy[slugs*ft^2]"] = 400.91910371/144
+        sim_json["reference"]["Izz[slugs*ft^2]"] = 1076.76979/144
         sim_json["reference"]["Ixy[slugs*ft^2]"] = -0.00000252/144
-        sim_json["reference"]["Ixz[slugs*ft^2]"] = 0.54859209/144
+        sim_json["reference"]["Ixz[slugs*ft^2]"] = 0.47384/144
         sim_json["reference"]["Iyz[slugs*ft^2]"] = 0.00001588/144
         sim_json["reference"]["CD0"] = C_D0
         sim_json["reference"]["CD1"] = C_D1
