@@ -110,7 +110,7 @@ def main(input_file,plot):
     #                                         Create Data Matrix, cases, and fill
     # Columns:
     # 0: aoa,  1: CL,  2: CD,  3: Cm,  4: CL_a,  5: Cm_a,  6: SM,  7: Cl_b,  8: Cn_b
-    aoa = np.linspace(-5,5,29)
+    aoa = np.linspace(-14,14,29)
     data_mat = np.zeros((aoa.size,9))
     #            Then Create Functions Matrix, use data, call functions, and fill
     # Columns:
@@ -390,7 +390,7 @@ def main(input_file,plot):
 
     l_wt = 1.1 * ((params["wing_avg_c"]*-0.75) - params["x_hstab"])
     first = (4 * params["Sw_H"] * l_wt) / (np.pi * (params["b"]**2) * params["wing_avg_c"])
-    CL_ahat = first * (0.90367*2 + 1.55647*2) * (0.295087712*2)
+    CL_ahat = first * (0.9191*2 + 1.5481*2) * (0.2962*2)
     Cm_ahat = CL_ahat * params["x_hstab"]
 
     with open("0000.json", "r") as f:
@@ -405,12 +405,12 @@ def main(input_file,plot):
         
         sim_json["reference"]["CL"] = results["CL"] # data_mat[15][1]
 
-        sim_json["reference"]["Ixx[slugs*ft^2]"] = 676.9938/144
-        sim_json["reference"]["Iyy[slugs*ft^2]"] = 400.91910371/144
-        sim_json["reference"]["Izz[slugs*ft^2]"] = 1076.76979/144
-        sim_json["reference"]["Ixy[slugs*ft^2]"] = -0.00000252/144
-        sim_json["reference"]["Ixz[slugs*ft^2]"] = 0.47384/144
-        sim_json["reference"]["Iyz[slugs*ft^2]"] = 0.00001588/144
+        sim_json["reference"]["Ixx[slugs*ft^2]"] = 2.0851040/32.17
+        sim_json["reference"]["Iyy[slugs*ft^2]"] = 2.2531505/32.17
+        sim_json["reference"]["Izz[slugs*ft^2]"] = 4.2977901/32.17
+        sim_json["reference"]["Ixy[slugs*ft^2]"] = 0.0
+        sim_json["reference"]["Ixz[slugs*ft^2]"] = -0.016/32.17
+        sim_json["reference"]["Iyz[slugs*ft^2]"] = 0
         sim_json["reference"]["CD0"] = C_D0
         sim_json["reference"]["CD1"] = C_D1
         sim_json["reference"]["CD2"] = C_D2
