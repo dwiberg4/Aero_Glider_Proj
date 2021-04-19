@@ -302,7 +302,7 @@ def main(input_file,plot):
     }
     my_scene.set_aircraft_state(state = state, aircraft = "glider_2.0")
     # 0.440613
-    target_CL = my_scene.target_CL(CL = 0.55, filename="target_CL.txt", set_state = True)
+    target_CL = my_scene.target_CL(CL = 0.7, filename="target_CL.txt", set_state = True)
     FM_results = my_scene.solve_forces(filename="Output_FM",report_by_segment=True, dimensional=False, non_dimensional=True,)
     derivs = my_scene.derivatives(filename="Output_Derivs",report_by_segment=True)
     results = {}
@@ -390,7 +390,7 @@ def main(input_file,plot):
 
     l_wt = 1.1 * ((params["wing_avg_c"]*-0.75) - params["x_hstab"])
     first = (4 * params["Sw_H"] * l_wt) / (np.pi * (params["b"]**2) * params["wing_avg_c"])
-    CL_ahat = first * (2.55843765445805*2 + 0.0000104413947951593*2) * (0.209494556787748*2)
+    CL_ahat = first * (0.90367*2 + 1.55647*2) * (0.295087712*2)
     Cm_ahat = CL_ahat * params["x_hstab"]
 
     with open("0000.json", "r") as f:

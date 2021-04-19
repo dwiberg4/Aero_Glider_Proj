@@ -27,7 +27,7 @@
         },
         "aircraft": {
             "glider_2.0": {
-                "file": "glider_2.1.json",
+                "file": "glider_2.2.json",
                 "state": {
                     "type": "aerodynamic",
                     "velocity": 15.76266,
