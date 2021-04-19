@@ -23,15 +23,15 @@
     "units": "English",
     "scene": {
         "atmosphere": {
-            "rho": 0.002048
+            "rho": 0.0020622
         },
         "aircraft": {
             "glider_2.0": {
-                "file": "glider_2.0.json",
+                "file": "glider_2.1.json",
                 "state": {
                     "type": "aerodynamic",
-                    "velocity": 17.93,
-                    "alpha": 0.0,
+                    "velocity": 15.76266,
+                    "alpha":0,
                     "beta": 0.0
                 },
                 "control_state": {
