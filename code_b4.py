@@ -14,8 +14,8 @@ import mode_approx as mapprox
 #### ------------------------------------------------------ ####
 #### --------------------Unpack the JSON------------------- ####
 # input_file = 'BaselineGlider.json'
-input_file = 'edited_0000.json'
-# input_file = '2001.json'
+# input_file = 'edited_0000.json'
+input_file = '2001.json'
 # input_file = 'book_example.json'
 if True:
     with open(input_file, "r") as f:
