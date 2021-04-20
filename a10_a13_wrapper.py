@@ -390,7 +390,7 @@ def main(input_file,plot):
 
     l_wt = 1.1 * ((params["wing_avg_c"]*-0.75) - params["x_hstab"])
     first = (4 * params["Sw_H"] * l_wt) / (np.pi * (params["b"]**2) * params["wing_avg_c"])
-    CL_ahat = first * (2.55843765470683*2) * (0.209494556583555*2)
+    CL_ahat = first * (2.54640784900357*2) * (0.20480395430685*2)
     Cm_ahat = CL_ahat * params["x_hstab"]
 
     with open("0000.json", "r") as f:
@@ -405,11 +405,11 @@ def main(input_file,plot):
         
         sim_json["reference"]["CL"] = results["CL"] # data_mat[15][1]
 
-        sim_json["reference"]["Ixx[slugs*ft^2]"] = 4.701919368263889/32.17
-        sim_json["reference"]["Iyy[slugs*ft^2]"] = 2.0561291261805557/32.17
-        sim_json["reference"]["Izz[slugs*ft^2]"] = 6.749246270347222/32.17
+        sim_json["reference"]["Ixx[slugs*ft^2]"] = 4.7028/32.17
+        sim_json["reference"]["Iyy[slugs*ft^2]"] = 1.9215/32.17
+        sim_json["reference"]["Izz[slugs*ft^2]"] = 6.5976/32.17
         sim_json["reference"]["Ixy[slugs*ft^2]"] = 0
-        sim_json["reference"]["Ixz[slugs*ft^2]"] = -0.016/32.17
+        sim_json["reference"]["Ixz[slugs*ft^2]"] = 0.0063/32.17
         sim_json["reference"]["Iyz[slugs*ft^2]"] = 0
         sim_json["reference"]["CD0"] = C_D0
         sim_json["reference"]["CD1"] = C_D1
