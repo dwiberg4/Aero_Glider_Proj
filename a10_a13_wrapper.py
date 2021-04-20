@@ -302,7 +302,7 @@ def main(input_file,plot):
     }
     my_scene.set_aircraft_state(state = state, aircraft = "glider_2.0")
     # 0.440613
-    target_CL = my_scene.target_CL(CL = 0.7, filename="target_CL.txt", set_state = True)
+    target_CL = my_scene.target_CL(CL = 0.55, filename="target_CL.txt", set_state = True)
     FM_results = my_scene.solve_forces(filename="Output_FM",report_by_segment=True, dimensional=False, non_dimensional=True,)
     derivs = my_scene.derivatives(filename="Output_Derivs",report_by_segment=True)
     results = {}
@@ -390,7 +390,7 @@ def main(input_file,plot):
 
     l_wt = 1.1 * ((params["wing_avg_c"]*-0.75) - params["x_hstab"])
     first = (4 * params["Sw_H"] * l_wt) / (np.pi * (params["b"]**2) * params["wing_avg_c"])
-    CL_ahat = first * (0.9191*2 + 1.5481*2) * (0.2962*2)
+    CL_ahat = first * (2.55843765470683*2) * (0.209494556583555*2)
     Cm_ahat = CL_ahat * params["x_hstab"]
 
     with open("0000.json", "r") as f:
@@ -405,10 +405,10 @@ def main(input_file,plot):
         
         sim_json["reference"]["CL"] = results["CL"] # data_mat[15][1]
 
-        sim_json["reference"]["Ixx[slugs*ft^2]"] = 2.0851040/32.17
-        sim_json["reference"]["Iyy[slugs*ft^2]"] = 2.2531505/32.17
-        sim_json["reference"]["Izz[slugs*ft^2]"] = 4.2977901/32.17
-        sim_json["reference"]["Ixy[slugs*ft^2]"] = 0.0
+        sim_json["reference"]["Ixx[slugs*ft^2]"] = 4.701919368263889/32.17
+        sim_json["reference"]["Iyy[slugs*ft^2]"] = 2.0561291261805557/32.17
+        sim_json["reference"]["Izz[slugs*ft^2]"] = 6.749246270347222/32.17
+        sim_json["reference"]["Ixy[slugs*ft^2]"] = 0
         sim_json["reference"]["Ixz[slugs*ft^2]"] = -0.016/32.17
         sim_json["reference"]["Iyz[slugs*ft^2]"] = 0
         sim_json["reference"]["CD0"] = C_D0
@@ -447,7 +447,7 @@ def main(input_file,plot):
 
 
 input_file = "scene.json"
-(results,params) = main(input_file,False)
+(results,params) = main(input_file,True)
 
 print("\n\nThe PARAMETERS Dictionary is as follows: ")
 pprint.pprint(params)
